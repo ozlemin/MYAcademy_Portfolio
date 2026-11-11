@@ -1,0 +1,82 @@
+@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+}
+
+<aside id="sidebar-wrapper" aria-label="Ana Yönetim Gezintisi" class="d-flex flex-column justify-content-between">
+    <div>
+        <!-- Brand Header -->
+        <div class="sidebar-brand d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-2">
+                <div class="brand-mark">P</div>
+                <div>
+                    <div class="fw-bold text-white fs-6 lh-1" style="font-family: 'Plus Jakarta Sans';">Poyraz.</div>
+                    <small class="text-white-50" style="font-size: 0.72rem; letter-spacing: 0.02em;">Portfolio Admin</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Scrollable Nav Groups -->
+        <div class="sidebar-nav-scroll">
+            <!-- GENEL -->
+            <div class="nav-group-title">Genel</div>
+            <a href="/Admin/Dashboard" class="sidebar-link @(currentController == "Dashboard" ? "active" : "")">
+                <i class="bi bi-speedometer2"></i>
+                <span>Dashboard</span>
+            </a>
+
+            <!-- İÇERİK -->
+            <div class="nav-group-title">İçerik</div>
+            <a href="/Admin/About" class="sidebar-link @(currentController == "About" ? "active" : "")">
+                <i class="bi bi-person"></i>
+                <span>Hakkımda</span>
+            </a>
+            <a href="/Admin/Education" class="sidebar-link @(currentController == "Education" ? "active" : "")">
+                <i class="bi bi-mortarboard"></i>
+                <span>Eğitim</span>
+            </a>
+            <a href="/Admin/Experience/ExperienceList" class="sidebar-link @(currentController == "Experience" ? "active" : "")">
+                <i class="bi bi-briefcase"></i>
+                <span>Deneyimler</span>
+            </a>
+            <a href="/Admin/Skill" class="sidebar-link @(currentController == "Skill" ? "active" : "")">
+                <i class="bi bi-code-slash"></i>
+                <span>Yetenekler</span>
+            </a>
+            <a href="/Admin/Project" class="sidebar-link @(currentController == "Project" ? "active" : "")">
+                <i class="bi bi-grid"></i>
+                <span>Projeler</span>
+            </a>
+
+            <!-- İLETİŞİM & SİSTEM -->
+            <div class="nav-group-title">İletişim & Sistem</div>
+            <a href="/Admin/Message/MessageList" class="sidebar-link @(currentController == "Message" ? "active" : "")">
+                <i class="bi bi-envelope"></i>
+                <span>Mesajlar</span>
+            </a>
+            <a href="/Admin/Setting" class="sidebar-link @(currentController == "Setting" ? "active" : "")">
+                <i class="bi bi-gear"></i>
+                <span>Ayarlar</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Admin Identity Bar at the Bottom with Dropdown -->
+    <div class="sidebar-user-card mb-3 position-relative dropdown profile-dropdown-wrap">
+        <a href="#" class="d-flex align-items-center gap-2 text-decoration-none w-100 dropdown-toggle shadow-none border-0" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
+            <div class="sidebar-user-avatar">ÖB</div>
+            <div class="overflow-hidden flex-grow-1">
+                <div class="fw-semibold text-white text-truncate" style="font-size: 0.83rem;">Özlem Bozkurt</div>
+                <div class="d-flex align-items-center gap-1">
+                    <span style="font-size: 0.7rem; color: #B3BFDF;">Yönetici</span>
+                </div>
+            </div>
+            <i class="bi bi-chevron-up text-white-50 ms-auto" style="font-size: 0.75rem;"></i>
+        </a>
+        <ul class="dropdown-menu dropdown-menu-custom shadow-sm mb-0" style="min-width: 200px; bottom: 100%; top: auto;">
+            <li><a class="dropdown-item" href="#"><i class="bi bi-person"></i> Profilim</a></li>
+            <li><a class="dropdown-item" href="#"><i class="bi bi-gear"></i> Ayarlar</a></li>
+            <li><hr class="dropdown-divider my-1"></li>
+            <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-box-arrow-right text-danger"></i> Çıkış Yap</a></li>
+        </ul>
+    </div>
+</aside>
