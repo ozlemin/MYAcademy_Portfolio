@@ -1,0 +1,602 @@
+@{
+    ViewData["Title"] = "Site Ayarları & CV Yönetimi";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+
+    bool cvExists = ViewBag.CvExists ?? false;
+    string cvPath = ViewBag.CvPath as string ?? "/cv/cv.pdf";
+    string cvSize = ViewBag.CvSize as string ?? "-";
+    string cvLastModified = ViewBag.CvLastModified as string ?? "-";
+}
+
+@section Styles {
+    <style>
+        .settings-page {
+            --primary: #5558A6;
+            --purple: #8276D9;
+            --dark: #343B5C;
+            --muted: #8990A8;
+            --border: #EAECF2;
+        }
+
+            .settings-page .page-title {
+                color: var(--dark);
+                font-size: 21px;
+                font-weight: 750;
+            }
+
+            .settings-page .page-description {
+                color: var(--muted);
+                font-size: 13px;
+            }
+
+            .settings-page .setting-card {
+                background: #fff;
+                border: 1px solid var(--border);
+                border-radius: 17px;
+                box-shadow: 0 4px 20px rgba(52,59,92,.045);
+                height: 100%;
+                overflow: hidden;
+            }
+
+            .settings-page .card-heading {
+                padding: 23px 24px 18px;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .settings-page .heading-icon {
+                width: 43px;
+                height: 43px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 12px;
+                background: #F1F0FC;
+                color: var(--primary);
+                font-size: 20px;
+                flex-shrink: 0;
+            }
+
+            .settings-page .heading-title {
+                color: var(--dark);
+                font-size: 15px;
+                font-weight: 750;
+                margin-bottom: 4px;
+            }
+
+            .settings-page .heading-subtitle {
+                color: var(--muted);
+                font-size: 11px;
+                margin: 0;
+            }
+
+            .settings-page .upload-area {
+                position: relative;
+                border: 2px dashed #DCD9F3;
+                border-radius: 14px;
+                background: #FAFAFE;
+                padding: 35px 20px;
+                text-align: center;
+                transition: all .25s ease;
+                cursor: pointer;
+            }
+
+                .settings-page .upload-area:hover,
+                .settings-page .upload-area:focus-within {
+                    border-color: var(--purple);
+                    background: #F7F6FE;
+                }
+
+            .settings-page .upload-icon {
+                width: 65px;
+                height: 65px;
+                margin: 0 auto 15px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 19px;
+                background: #F0EEFC;
+                color: var(--primary);
+                font-size: 30px;
+            }
+
+            .settings-page .upload-title {
+                color: var(--dark);
+                font-size: 14px;
+                font-weight: 750;
+                margin-bottom: 7px;
+            }
+
+            .settings-page .upload-description {
+                color: var(--muted);
+                font-size: 11px;
+                margin-bottom: 15px;
+            }
+
+            .settings-page .file-input {
+                display: block;
+                width: 100%;
+                max-width: 310px;
+                margin: 0 auto;
+                font-size: 11px;
+                color: var(--muted);
+            }
+
+                .settings-page .file-input::file-selector-button {
+                    border: 1px solid #E1DFF5;
+                    background: #F1F0FC;
+                    color: var(--primary);
+                    border-radius: 7px;
+                    padding: 8px 12px;
+                    margin-right: 10px;
+                    font-weight: 650;
+                    cursor: pointer;
+                }
+
+            .settings-page .upload-info {
+                background: #F8F9FC;
+                border-radius: 10px;
+                padding: 12px 14px;
+                color: #747D96;
+                font-size: 11px;
+            }
+
+            .settings-page .btn-upload {
+                background: linear-gradient(135deg, #5558A6, #8276D9);
+                color: white;
+                border: none;
+                border-radius: 9px;
+                padding: 11px 20px;
+                font-size: 12px;
+                font-weight: 650;
+                transition: .2s;
+            }
+
+                .settings-page .btn-upload:hover {
+                    color: white;
+                    transform: translateY(-2px);
+                    box-shadow: 0 5px 14px rgba(85,88,166,.2);
+                }
+
+            .settings-page .btn-site {
+                border: 1px solid var(--border);
+                color: #69718A;
+                border-radius: 9px;
+                padding: 11px 17px;
+                font-size: 12px;
+                font-weight: 600;
+            }
+
+                .settings-page .btn-site:hover {
+                    background: #F5F5FA;
+                    color: var(--dark);
+                }
+
+            .settings-page .cv-preview {
+                background: linear-gradient(135deg, #343B5C, #5558A6);
+                border-radius: 14px;
+                padding: 22px;
+                position: relative;
+                overflow: hidden;
+                color: white;
+            }
+
+                .settings-page .cv-preview::after {
+                    content: "";
+                    position: absolute;
+                    width: 150px;
+                    height: 150px;
+                    border: 1px solid rgba(255,255,255,.13);
+                    border-radius: 50%;
+                    right: -45px;
+                    top: -85px;
+                }
+
+            .settings-page .pdf-icon {
+                width: 58px;
+                height: 58px;
+                border-radius: 15px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: rgba(255,255,255,.15);
+                color: white;
+                font-size: 30px;
+                margin-bottom: 17px;
+                position: relative;
+                z-index: 1;
+            }
+
+            .settings-page .cv-filename {
+                font-size: 16px;
+                font-weight: 750;
+                margin-bottom: 5px;
+                position: relative;
+                z-index: 1;
+            }
+
+            .settings-page .cv-caption {
+                font-size: 11px;
+                color: rgba(255,255,255,.72);
+                position: relative;
+                z-index: 1;
+            }
+
+            .settings-page .active-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                background: rgba(255,255,255,.14);
+                border: 1px solid rgba(255,255,255,.2);
+                color: white;
+                padding: 7px 11px;
+                border-radius: 30px;
+                font-size: 10px;
+                font-weight: 650;
+                position: relative;
+                z-index: 1;
+            }
+
+            .settings-page .file-detail {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 15px 0;
+                border-bottom: 1px solid #F0F1F5;
+            }
+
+                .settings-page .file-detail:last-child {
+                    border-bottom: none;
+                }
+
+            .settings-page .detail-label {
+                color: var(--muted);
+                font-size: 11px;
+            }
+
+            .settings-page .detail-value {
+                color: var(--dark);
+                font-size: 12px;
+                font-weight: 700;
+            }
+
+            .settings-page .btn-download {
+                background: #F1F0FC;
+                color: var(--primary);
+                border: 1px solid #E5E2F7;
+                border-radius: 9px;
+                padding: 12px;
+                font-size: 12px;
+                font-weight: 700;
+                transition: .2s;
+            }
+
+                .settings-page .btn-download:hover {
+                    background: var(--primary);
+                    color: white;
+                }
+
+            .settings-page .btn-delete {
+                background: #FFF1F1;
+                color: #D65B64;
+                border: 1px solid #F8DEDF;
+                border-radius: 9px;
+                padding: 12px;
+                font-size: 12px;
+                font-weight: 700;
+                transition: .2s;
+            }
+
+                .settings-page .btn-delete:hover {
+                    background: #D65B64;
+                    color: white;
+                    border-color: #D65B64;
+                }
+
+            .settings-page .empty-cv {
+                text-align: center;
+                padding: 38px 15px;
+            }
+
+            .settings-page .empty-icon {
+                width: 75px;
+                height: 75px;
+                background: #FFF5E9;
+                color: #D99A45;
+                border-radius: 22px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 34px;
+                margin: 0 auto 17px;
+            }
+
+            .settings-page .empty-title {
+                color: var(--dark);
+                font-size: 14px;
+                font-weight: 750;
+                margin-bottom: 7px;
+            }
+
+            .settings-page .empty-description {
+                color: var(--muted);
+                font-size: 11px;
+                line-height: 1.7;
+            }
+
+            .settings-page .info-box {
+                background: #F8F9FC;
+                border: 1px solid var(--border);
+                border-radius: 11px;
+                padding: 14px;
+            }
+
+            .settings-page .info-box-title {
+                color: var(--dark);
+                font-size: 12px;
+                font-weight: 700;
+                margin-bottom: 8px;
+            }
+
+            .settings-page .info-box p {
+                color: var(--muted);
+                font-size: 11px;
+                line-height: 1.7;
+                margin: 0;
+            }
+
+        @@media(max-width: 767px) {
+            .settings-page .page-title {
+                font-size: 18px;
+            }
+
+            .settings-page .card-heading {
+                padding: 18px;
+            }
+
+            .settings-page .upload-area {
+                padding: 27px 12px;
+            }
+
+            .settings-page .btn-upload,
+            .settings-page .btn-site {
+                flex: 1;
+            }
+        }
+    </style>
+}
+
+<div class="container-fluid settings-page">
+
+    <!-- SAYFA BAŞLIĞI -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+
+
+
+        <span class="badge rounded-pill px-3 py-2"
+              style="background:#F1F0FC;color:#5558A6;font-size:11px;">
+            <i class="bi bi-gear me-1"></i>
+            Sistem Yönetimi
+        </span>
+
+    </div>
+
+    <div class="row g-4">
+
+        <!-- SOL: CV YÜKLEME -->
+        <div class="col-lg-7">
+
+            <div class="setting-card">
+
+                <div class="card-heading">
+                    <div class="d-flex align-items-center gap-3">
+
+                        <div class="heading-icon">
+                            <i class="bi bi-cloud-arrow-up"></i>
+                        </div>
+
+                        <div>
+                            <h5 class="heading-title">Özgeçmiş (CV) Yönetimi</h5>
+                            <p class="heading-subtitle">
+                                Portföyünüzde ziyaretçilerin indirebileceği CV dosyasını yükleyin.
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="card-body p-4">
+
+                    <form asp-action="UploadCv"
+                          method="post"
+                          enctype="multipart/form-data">
+
+                        @Html.AntiForgeryToken()
+
+                        <label class="form-label fw-semibold mb-3"
+                               style="color:#343B5C;font-size:12px;">
+                            PDF Dosyası Seçin
+                        </label>
+
+                        <div class="upload-area mb-3">
+
+                            <div class="upload-icon">
+                                <i class="bi bi-file-earmark-pdf"></i>
+                            </div>
+
+                            <h6 class="upload-title">
+                                CV Dosyanızı Buraya Ekleyin
+                            </h6>
+
+                            <p class="upload-description">
+                                Bilgisayarınızdan bir PDF dosyası seçerek yükleme yapabilirsiniz.
+                            </p>
+
+                            <input type="file"
+                                   name="cvFile"
+                                   class="file-input"
+                                   accept=".pdf,application/pdf"
+                                   required />
+
+                        </div>
+
+                        <div class="upload-info mb-4">
+                            <div class="d-flex gap-2 align-items-start">
+                                <i class="bi bi-info-circle mt-1"
+                                   style="color:#8276D9;"></i>
+                                <div>
+                                    <strong>Dosya yükleme kuralları</strong>
+                                    <div class="mt-1">
+                                        Yalnızca PDF formatı kabul edilir. Maksimum dosya boyutu 5 MB olmalıdır.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex flex-wrap gap-2">
+
+                            <button type="submit" class="btn btn-upload">
+                                <i class="bi bi-cloud-arrow-up me-2"></i>
+                                CV Dosyasını Yükle
+                            </button>
+
+                            <a href="/Default/Index"
+                               target="_blank"
+                               class="btn btn-site">
+                                <i class="bi bi-box-arrow-up-right me-1"></i>
+                                Canlı Siteyi Gör
+                            </a>
+
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- SAĞ: MEVCUT CV DURUMU -->
+        <div class="col-lg-5">
+
+            <div class="setting-card">
+
+                <div class="card-heading">
+                    <div class="d-flex align-items-center gap-3">
+
+                        <div class="heading-icon">
+                            <i class="bi bi-file-earmark-check"></i>
+                        </div>
+
+                        <div>
+                            <h5 class="heading-title">Mevcut CV Durumu</h5>
+                            <p class="heading-subtitle">
+                                Sunucudaki özgeçmiş dosyanızın bilgileri.
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="card-body p-4">
+
+                    @if (cvExists)
+                    {
+                        <div class="cv-preview mb-3">
+
+                            <div class="d-flex justify-content-between align-items-start">
+
+                                <div class="pdf-icon">
+                                    <i class="bi bi-filetype-pdf"></i>
+                                </div>
+
+                                <span class="active-badge">
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    Aktif
+                                </span>
+
+                            </div>
+
+                            <div class="cv-filename">cv.pdf</div>
+
+                            <div class="cv-caption">
+                                Portföyünüzde yayınlanan özgeçmiş dosyası
+                            </div>
+
+                        </div>
+
+                        <div class="file-detail">
+                            <span class="detail-label">
+                                <i class="bi bi-hdd me-2"></i>Dosya Boyutu
+                            </span>
+                            <span class="detail-value">@cvSize</span>
+                        </div>
+
+                        <div class="file-detail">
+                            <span class="detail-label">
+                                <i class="bi bi-calendar3 me-2"></i>Son Güncelleme
+                            </span>
+                            <span class="detail-value">@cvLastModified</span>
+                        </div>
+
+                        <div class="mt-4">
+                            <a href="/Default/DownloadCv"
+                               target="_blank"
+                               class="btn btn-download w-100">
+                                <i class="bi bi-eye me-2"></i>
+                                Mevcut CV'yi Görüntüle / İndir
+                            </a>
+                        </div>
+
+                        <!-- CV SİLME BUTONU -->
+                        <div class="mt-2">
+                            <form asp-action="DeleteCv"
+                                  method="post"
+                                  onsubmit="return confirm('Mevcut CV dosyasını silmek istediğinize emin misiniz? Bu işlem geri alınamaz.');">
+
+                                @Html.AntiForgeryToken()
+
+                                <button type="submit" class="btn btn-delete w-100">
+                                    <i class="bi bi-trash3 me-2"></i>
+                                    CV Dosyasını Sil
+                                </button>
+
+                            </form>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="empty-cv">
+
+                            <div class="empty-icon">
+                                <i class="bi bi-file-earmark-x"></i>
+                            </div>
+
+                            <h6 class="empty-title">
+                                Henüz CV Dosyası Yüklenmemiş
+                            </h6>
+
+                            <p class="empty-description mb-0">
+                                Portföy ziyaretçilerinizin özgeçmişinizi görüntüleyebilmesi ve indirebilmesi için sol taraftaki alandan PDF dosyanızı yükleyebilirsiniz.
+                            </p>
+
+                        </div>
+                    }
+
+                    <div class="info-box mt-3">
+                        <div class="info-box-title">
+                            <i class="bi bi-lightbulb me-1"
+                               style="color:#8276D9;"></i>
+                            Bilgilendirme
+                        </div>
+                        <p>
+                            Yeni bir CV yüklediğinizde mevcut CV dosyanız güncellenir. Böylece ziyaretçileriniz her zaman en güncel özgeçmişinize ulaşabilir.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>

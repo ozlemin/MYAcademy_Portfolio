@@ -1,4 +1,3 @@
-﻿
 @model List<MYAcademy_Portfolio.Entities.Project>
 
 <!-- Portfolio Projects Section -->
@@ -10,70 +9,77 @@
             <p class="section-subtitle">Öğrendiklerimi gerçek ürünlere dönüştürdüğüm çalışmalar.</p>
         </div>
 
-        <!-- Category Filter Buttons -->
-        <div class="d-flex justify-content-center flex-wrap gap-2 mb-5 reveal-on-scroll" id="projectFilterGroup">
-            <button class="filter-btn active" data-filter="all">Tümü</button>
-            <button class="filter-btn" data-filter="web-app">Web Uygulamaları</button>
-            <button class="filter-btn" data-filter="dashboard">Dashboard</button>
-            <button class="filter-btn" data-filter="api-projects">API Projeleri</button>
-        </div>
+        @if (Model == null || !Model.Any())
+        {
+            <div class="text-center py-5 text-secondary">
+                <i class="bi bi-folder-x fs-1 d-block mb-2"></i>
+                <p class="mb-0">Henüz yayınlanmış aktif proje bulunmamaktadır.</p>
+            </div>
+        }
+        else
+        {
+            var categories = Model
+                .Where(x => x.Category != null && !string.IsNullOrWhiteSpace(x.Category.CategoryName))
+                .Select(x => x.Category!.CategoryName)
+                .Distinct()
+                .ToList();
 
-        <!-- Project Cards Grid -->
-        <div class="row g-4" id="projectGrid">
-            @foreach (var item in Model)
-            {
-                <div class="col-lg-4 col-md-6 project-item" data-category="web-app">
-                    <div class="project-card reveal-on-scroll">
+            <!-- Category Filter Buttons -->
+            <div class="d-flex justify-content-center flex-wrap gap-2 mb-5 reveal-on-scroll" id="projectFilterGroup">
+                <button class="filter-btn active" data-filter="all">Tümü</button>
+                @foreach (var cat in categories)
+                {
+                    var slug = cat.ToLower().Replace(" ", "-").Replace("ç", "c").Replace("ğ", "g").Replace("ı", "i").Replace("ö", "o").Replace("ş", "s").Replace("ü", "u");
+                    <button class="filter-btn" data-filter="@slug">@cat</button>
+                }
+            </div>
 
-                        <!-- Project Image -->
-                        <div class="project-thumb"
-                             style="width:100%; aspect-ratio:16/9; overflow:hidden;">
+            <!-- Project Cards Grid -->
+            <div class="row g-4" id="projectGrid">
+                @foreach (var item in Model)
+                {
+                    var catName = item.Category?.CategoryName ?? "Genel";
+                    var catSlug = catName.ToLower().Replace(" ", "-").Replace("ç", "c").Replace("ğ", "g").Replace("ı", "i").Replace("ö", "o").Replace("ş", "s").Replace("ü", "u");
 
-                            <img src="@item.CoverImageUrl"
-                                 alt="@item.Title"
-                                 style="width:100%;
-                                        height:100%;
-                                        object-fit:cover;
-                                        display:block;" />
-                        </div>
+                    <div class="col-lg-4 col-md-6 project-item" data-category="@catSlug">
+                        <div class="project-card reveal-on-scroll h-100 d-flex flex-column">
 
-                        <!-- Project Content -->
-                        <div class="project-body">
-                            <span class="project-category-badge">@item.Category.CategoryName</span>
-
-                            <h3 class="project-title">@item.Title</h3>
-
-                            <p class="project-desc">@item.Description</p>
-
-                            <!-- Technologies -->
-                            <div class="mb-3">
-                                <span class="tech-tag">ASP.NET Core</span>
-                                <span class="tech-tag">EF Core</span>
-                                <span class="tech-tag">SQL Server</span>
-                                <span class="tech-tag">Bootstrap</span>
+                            <!-- Project Image -->
+                            <div class="project-thumb" style="width:100%; aspect-ratio:16/9; overflow:hidden; background-color: #f1f5f9;">
+                                <img src="@(string.IsNullOrEmpty(item.CoverImageUrl) ? "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=600&q=80" : item.CoverImageUrl)"
+                                     alt="@item.Title"
+                                     style="width:100%; height:100%; object-fit:cover; display:block;" />
                             </div>
 
-                            <!-- Project Links -->
-                            <div class="project-footer">
-                                <a href="@item.GitHubUrl"
-                                   target="_blank"
-                                   rel="noopener noreferrer"
-                                   class="project-link-btn">
-                                    <i class="bi bi-github"></i> GitHub
-                                </a>
+                            <!-- Project Content -->
+                            <div class="project-body d-flex flex-column flex-grow-1">
+                                <span class="project-category-badge align-self-start">@catName</span>
 
-                                <a href="#projects"
-                                   class="project-link-btn text-primary">
-                                    <i class="bi bi-box-arrow-up-right"></i> Canlı Demo
-                                </a>
+                                <h3 class="project-title mt-2">@item.Title</h3>
+
+                                <p class="project-desc flex-grow-1">@item.Description</p>
+
+                                <!-- Project Links -->
+                                <div class="project-footer mt-auto pt-3 border-top">
+                                    @if (!string.IsNullOrEmpty(item.GitHubUrl))
+                                    {
+                                        <a href="@item.GitHubUrl"
+                                           target="_blank"
+                                           rel="noopener noreferrer"
+                                           class="project-link-btn">
+                                            <i class="bi bi-github"></i> GitHub
+                                        </a>
+                                    }
+                                    <a href="#contact" class="project-link-btn text-primary">
+                                        <i class="bi bi-chat-dots"></i> Detay İste
+                                    </a>
+                                </div>
                             </div>
-                        </div>
 
+                        </div>
                     </div>
-                </div>
-            }
-        </div>
+                }
+            </div>
+        }
     </div>
 </section>
-
-

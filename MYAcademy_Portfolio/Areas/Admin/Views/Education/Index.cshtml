@@ -1,0 +1,266 @@
+﻿@model List<MYAcademy_Portfolio.Entities.Education>
+
+@{
+    ViewData["Title"] = "Eğitim Listesi";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+@section Styles {
+    <style>
+        .list-card {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-subtle);
+            overflow: hidden;
+        }
+
+        .list-card-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .list-card-body {
+            padding: 20px 24px;
+        }
+
+        .btn-accent {
+            background: var(--primary-accent);
+            border: 1px solid var(--primary-accent);
+            color: #fff;
+            border-radius: 12px;
+            font-weight: 600;
+            padding: 9px 18px;
+        }
+
+            .btn-accent:hover {
+                background: var(--primary-accent-hover);
+                color: #fff;
+            }
+
+        .btn-soft {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            border-radius: 10px;
+            padding: 7px 13px;
+        }
+
+            .btn-soft:hover {
+                background: #F8F9FD;
+                color: var(--primary-accent);
+            }
+
+        .btn-delete {
+            background: #fff;
+            border: 1px solid #F1CACA;
+            color: #C0342B;
+            border-radius: 10px;
+            padding: 7px 13px;
+        }
+
+            .btn-delete:hover {
+                background: #FFF1F1;
+                color: #C0342B;
+            }
+
+        .table {
+            vertical-align: middle;
+            margin-bottom: 0;
+        }
+
+            .table thead th {
+                color: var(--text-secondary);
+                font-size: 0.82rem;
+                font-weight: 600;
+                padding: 14px 12px;
+                background: #FAFBFE;
+                white-space: nowrap;
+            }
+
+            .table tbody td {
+                padding: 15px 12px;
+                font-size: 0.86rem;
+            }
+
+        .status-active {
+            background: #E8F7EF;
+            color: #238653;
+            padding: 5px 11px;
+            border-radius: 20px;
+            font-size: 0.76rem;
+            font-weight: 600;
+        }
+
+        .status-passive {
+            background: #F1F2F5;
+            color: #737987;
+            padding: 5px 11px;
+            border-radius: 20px;
+            font-size: 0.76rem;
+            font-weight: 600;
+        }
+
+        .empty-state {
+            padding: 45px 20px;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+            .empty-state i {
+                font-size: 2.5rem;
+                color: var(--primary-accent);
+            }
+    </style>
+}
+
+<div class="list-card">
+
+    <div class="list-card-header">
+
+        <a asp-area="Admin"
+           asp-controller="Education"
+           asp-action="Create"
+           class="btn btn-accent">
+            <i class="bi bi-plus-circle me-1"></i>
+            Yeni Eğitim Ekle
+        </a>
+
+    </div>
+
+    <div class="list-card-body">
+
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show">
+                <i class="bi bi-check-circle me-2"></i>
+                @TempData["Success"]
+                <button type="button" class="btn-close"
+                        data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show">
+                @TempData["Error"]
+                <button type="button" class="btn-close"
+                        data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        @if (Model == null || !Model.Any())
+        {
+            <div class="empty-state">
+                <i class="bi bi-mortarboard d-block mb-3"></i>
+
+                <h6 class="fw-bold">
+                    Henüz eğitim kaydı bulunmuyor.
+                </h6>
+
+                <p class="small mb-3">
+                    İlk eğitim kaydınızı ekleyerek başlayabilirsiniz.
+                </p>
+
+                <a asp-area="Admin"
+                   asp-controller="Education"
+                   asp-action="Create"
+                   class="btn btn-accent">
+                    <i class="bi bi-plus-circle me-1"></i>
+                    Eğitim Ekle
+                </a>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover">
+
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Okul / Kurum</th>
+                            <th>Bölüm / Program</th>
+                            <th>Süre</th>
+                            <th>Durum</th>
+                            <th class="text-center">İşlemler</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.EducationId</td>
+
+                                <td>
+                                    <span class="fw-semibold">
+                                        @item.Title
+                                    </span>
+                                </td>
+
+                                <td>@item.SubTitle</td>
+
+                                <td>@item.Duration</td>
+
+                                <td>
+                                    @if (item.IsActive)
+                                    {
+                                        <span class="status-active">
+                                            Aktif
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="status-passive">
+                                            Pasif
+                                        </span>
+                                    }
+                                </td>
+
+                                <td>
+                                    <div class="d-flex justify-content-center gap-2">
+
+                                        <a asp-area="Admin"
+                                           asp-controller="Education"
+                                           asp-action="Edit"
+                                           asp-route-id="@item.EducationId"
+                                           class="btn btn-soft btn-sm">
+                                            <i class="bi bi-pencil-square me-1"></i>
+                                            Düzenle
+                                        </a>
+
+                                        <form asp-area="Admin"
+                                              asp-controller="Education"
+                                              asp-action="Delete"
+                                              asp-route-id="@item.EducationId"
+                                              method="post"
+                                              onsubmit="return confirm('Bu eğitim kaydını silmek istediğinize emin misiniz?');">
+
+                                            @Html.AntiForgeryToken()
+
+                                            <button type="submit"
+                                                    class="btn btn-delete btn-sm">
+                                                <i class="bi bi-trash me-1"></i>
+                                                Sil
+                                            </button>
+
+                                        </form>
+
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+            </div>
+        }
+
+    </div>
+</div>

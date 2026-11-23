@@ -1,0 +1,569 @@
+@model MYAcademy_Portfolio.Entities.About
+
+@{
+    ViewData["Title"] = "Yönetici Profili";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+
+    var initials = !string.IsNullOrWhiteSpace(Model?.NameSurname) && Model.NameSurname.Length >= 2
+        ? Model.NameSurname.Substring(0, 2).ToUpper()
+        : "ÖB";
+}
+
+@section Styles {
+    <style>
+        .profile-page {
+            --profile-primary: #5558A6;
+            --profile-purple: #8276D9;
+            --profile-dark: #343B5C;
+            --profile-muted: #8990A8;
+            --profile-border: #EAECF2;
+            --profile-bg: #F8F9FC;
+        }
+
+            .profile-page .profile-card {
+                background: #fff;
+                border: 1px solid var(--profile-border);
+                border-radius: 18px;
+                box-shadow: 0 4px 20px rgba(52, 59, 92, .045);
+                overflow: hidden;
+                height: 100%;
+            }
+
+            /* Sol Profil Alanı */
+            .profile-page .profile-banner {
+                height: 125px;
+                background: linear-gradient(125deg, #343B5C, #5558A6 65%, #8276D9);
+                position: relative;
+                overflow: hidden;
+            }
+
+                .profile-page .profile-banner::before {
+                    content: "";
+                    position: absolute;
+                    width: 180px;
+                    height: 180px;
+                    border: 1px solid rgba(255,255,255,.15);
+                    border-radius: 50%;
+                    right: -35px;
+                    top: -95px;
+                }
+
+                .profile-page .profile-banner::after {
+                    content: "";
+                    position: absolute;
+                    width: 120px;
+                    height: 120px;
+                    border: 1px solid rgba(255,255,255,.12);
+                    border-radius: 50%;
+                    right: 65px;
+                    bottom: -80px;
+                }
+
+            .profile-page .profile-content {
+                padding: 0 25px 25px;
+                margin-top: -55px;
+                position: relative;
+                z-index: 1;
+            }
+
+            .profile-page .profile-avatar {
+                width: 105px;
+                height: 105px;
+                border-radius: 24px;
+                background: linear-gradient(135deg, #8276D9, #5558A6);
+                color: white;
+                border: 5px solid #fff;
+                box-shadow: 0 6px 18px rgba(85, 88, 166, .2);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 34px;
+                font-weight: 800;
+                margin-bottom: 18px;
+            }
+
+            .profile-page .profile-name {
+                color: var(--profile-dark);
+                font-weight: 750;
+                font-size: 21px;
+                margin-bottom: 5px;
+            }
+
+            .profile-page .profile-job {
+                color: var(--profile-primary);
+                font-size: 13px;
+                font-weight: 600;
+            }
+
+            .profile-page .profile-status {
+                display: inline-flex;
+                align-items: center;
+                gap: 7px;
+                background: #EFF8F3;
+                color: #25845A;
+                border: 1px solid #D9EEE2;
+                padding: 8px 13px;
+                border-radius: 30px;
+                font-size: 11px;
+                font-weight: 700;
+            }
+
+            .profile-page .profile-info {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 12px 0;
+                border-bottom: 1px solid #F0F1F5;
+                min-width: 0;
+            }
+
+            .profile-page .info-icon {
+                width: 37px;
+                height: 37px;
+                flex-shrink: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 11px;
+                background: #F1F0FC;
+                color: var(--profile-primary);
+                font-size: 16px;
+            }
+
+            .profile-page .info-label {
+                color: var(--profile-muted);
+                font-size: 11px;
+                margin-bottom: 3px;
+            }
+
+            .profile-page .info-value {
+                color: var(--profile-dark);
+                font-size: 12px;
+                font-weight: 600;
+                overflow-wrap: anywhere;
+            }
+
+            /* Sağ Form Alanı */
+            .profile-page .section-heading {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin-bottom: 22px;
+            }
+
+            .profile-page .section-icon {
+                width: 40px;
+                height: 40px;
+                border-radius: 12px;
+                background: #F1F0FC;
+                color: var(--profile-primary);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 18px;
+            }
+
+            .profile-page .section-heading h5 {
+                color: var(--profile-dark);
+                font-size: 17px;
+                font-weight: 750;
+                margin: 0 0 4px;
+            }
+
+            .profile-page .section-heading p {
+                color: var(--profile-muted);
+                font-size: 12px;
+                margin: 0;
+            }
+
+            .profile-page .form-section-title {
+                color: var(--profile-dark);
+                font-size: 13px;
+                font-weight: 700;
+                margin-bottom: 16px;
+                padding-bottom: 10px;
+                border-bottom: 1px solid var(--profile-border);
+            }
+
+            .profile-page .form-label {
+                color: #515873;
+                font-size: 12px;
+                font-weight: 650;
+                margin-bottom: 8px;
+            }
+
+            .profile-page .form-control {
+                border: 1px solid #E5E7EF;
+                border-radius: 10px;
+                padding: 11px 13px;
+                font-size: 13px;
+                color: var(--profile-dark);
+                background-color: #FCFCFE;
+                transition: all .2s ease;
+                box-shadow: none;
+            }
+
+                .profile-page .form-control:focus {
+                    border-color: var(--profile-purple);
+                    background: #fff;
+                    box-shadow: 0 0 0 3px rgba(130, 118, 217, .12);
+                }
+
+                .profile-page .form-control::placeholder {
+                    color: #ADB2C2;
+                    font-size: 12px;
+                }
+
+            .profile-page textarea.form-control {
+                resize: vertical;
+                min-height: 115px;
+            }
+
+            .profile-page .btn-save {
+                background: linear-gradient(135deg, #5558A6, #8276D9);
+                color: #fff;
+                border: none;
+                border-radius: 10px;
+                padding: 11px 22px;
+                font-size: 13px;
+                font-weight: 650;
+                transition: all .2s ease;
+            }
+
+                .profile-page .btn-save:hover {
+                    color: #fff;
+                    transform: translateY(-2px);
+                    box-shadow: 0 5px 14px rgba(85, 88, 166, .25);
+                }
+
+            .profile-page .btn-cancel {
+                background: #F3F4F8;
+                color: #626981;
+                border: 1px solid #EAECF2;
+                border-radius: 10px;
+                padding: 11px 20px;
+                font-size: 13px;
+                font-weight: 600;
+            }
+
+                .profile-page .btn-cancel:hover {
+                    background: #E9EAF1;
+                    color: var(--profile-dark);
+                }
+
+            .profile-page .profile-site-btn {
+                border: 1px solid #E1DFF5;
+                color: var(--profile-primary);
+                background: #F8F7FE;
+                border-radius: 10px;
+                padding: 11px;
+                font-size: 12px;
+                font-weight: 650;
+                transition: .2s;
+            }
+
+                .profile-page .profile-site-btn:hover {
+                    background: var(--profile-primary);
+                    color: white;
+                }
+
+            .profile-page .validation-error {
+                font-size: 11px;
+                margin-top: 5px;
+                display: block;
+            }
+
+        @@media (max-width: 767px) {
+            .profile-page .profile-content {
+                padding: 0 18px 20px;
+            }
+
+            .profile-page .profile-banner {
+                height: 105px;
+            }
+
+            .profile-page .profile-avatar {
+                width: 90px;
+                height: 90px;
+                font-size: 29px;
+            }
+
+            .profile-page .btn-save,
+            .profile-page .btn-cancel {
+                flex: 1;
+            }
+        }
+    </style>
+}
+
+<div class="container-fluid profile-page">
+
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <div>
+            <h4 class="fw-bold mb-1" style="color:#343B5C;">Yönetici Profili</h4>
+            <p class="text-muted small mb-0">Profil bilgilerinizi görüntüleyin ve güncelleyin.</p>
+        </div>
+        <span class="badge rounded-pill px-3 py-2"
+              style="background:#F1F0FC;color:#5558A6;">
+            <i class="bi bi-person-gear me-1"></i> Profil Yönetimi
+        </span>
+    </div>
+
+    <div class="row g-4">
+
+        <!-- SOL PROFİL KARTI -->
+        <div class="col-lg-4 col-xl-3">
+            <div class="profile-card">
+
+                <div class="profile-banner"></div>
+
+                <div class="profile-content">
+
+                    <div class="profile-avatar">
+                        @initials
+                    </div>
+
+                    <h5 class="profile-name">@Model?.NameSurname</h5>
+                    <div class="profile-job mb-3">
+                        <i class="bi bi-code-slash me-1"></i>
+                        @Model?.JobTitle
+                    </div>
+
+                    <div class="profile-status mb-4">
+                        <i class="bi bi-shield-check"></i>
+                        Sistem Yöneticisi
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="fw-bold small" style="color:#343B5C;">
+                                Profil Bilgileri
+                            </span>
+                            <i class="bi bi-person-vcard" style="color:#8276D9;"></i>
+                        </div>
+
+                        <div class="profile-info">
+                            <div class="info-icon">
+                                <i class="bi bi-envelope"></i>
+                            </div>
+                            <div class="overflow-hidden">
+                                <div class="info-label">E-posta Adresi</div>
+                                <div class="info-value">@Model?.Email</div>
+                            </div>
+                        </div>
+
+                        <div class="profile-info">
+                            <div class="info-icon">
+                                <i class="bi bi-geo-alt"></i>
+                            </div>
+                            <div>
+                                <div class="info-label">Konum</div>
+                                <div class="info-value">@Model?.Location</div>
+                            </div>
+                        </div>
+
+                        <div class="profile-info">
+                            <div class="info-icon">
+                                <i class="bi bi-briefcase"></i>
+                            </div>
+                            <div>
+                                <div class="info-label">Uzmanlık Alanı</div>
+                                <div class="info-value">@Model?.Expert</div>
+                            </div>
+                        </div>
+
+                        @if (!string.IsNullOrWhiteSpace(Model?.OpenToWork))
+                        {
+                            <div class="profile-info">
+                                <div class="info-icon">
+                                    <i class="bi bi-check-circle"></i>
+                                </div>
+                                <div>
+                                    <div class="info-label">İş Fırsatı</div>
+                                    <div class="info-value">@Model.OpenToWork</div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="pt-3 mt-3 border-top">
+                        <a href="/Default/Index" target="_blank"
+                           class="btn profile-site-btn w-100">
+                            <i class="bi bi-box-arrow-up-right me-2"></i>
+                            Canlı Portföyü Görüntüle
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- SAĞ DÜZENLEME FORMU -->
+        <div class="col-lg-8 col-xl-9">
+            <div class="profile-card">
+
+                <div class="card-body p-4 p-xl-5">
+
+                    <div class="section-heading">
+                        <div class="section-icon">
+                            <i class="bi bi-pencil-square"></i>
+                        </div>
+                        <div>
+                            <h5>Profil Bilgilerini Düzenle</h5>
+                            <p>Portföyünüzde görüntülenecek kişisel ve profesyonel bilgilerinizi yönetin.</p>
+                        </div>
+                    </div>
+
+                    <form asp-action="Index" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <input type="hidden" asp-for="AboutId" />
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="text-danger small mb-3"></div>
+
+                        <!-- KİŞİSEL BİLGİLER -->
+                        <div class="mb-4">
+
+                            <div class="form-section-title">
+                                <i class="bi bi-person me-2" style="color:#8276D9;"></i>
+                                Kişisel Bilgiler
+                            </div>
+
+                            <div class="row g-3">
+
+                                <div class="col-md-6">
+                                    <label asp-for="NameSurname" class="form-label">
+                                        Ad Soyad
+                                    </label>
+                                    <input asp-for="NameSurname"
+                                           class="form-control"
+                                           placeholder="Adınızı ve soyadınızı giriniz." />
+                                    <span asp-validation-for="NameSurname"
+                                          class="text-danger validation-error"></span>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label asp-for="JobTitle" class="form-label">
+                                        Unvan / Mesleki Rol
+                                    </label>
+                                    <input asp-for="JobTitle"
+                                           class="form-control"
+                                           placeholder="Örn: Computer Programmer" />
+                                    <span asp-validation-for="JobTitle"
+                                          class="text-danger validation-error"></span>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label asp-for="Email" class="form-label">
+                                        E-posta Adresi
+                                    </label>
+                                    <input asp-for="Email"
+                                           class="form-control"
+                                           placeholder="ornek@mail.com" />
+                                    <span asp-validation-for="Email"
+                                          class="text-danger validation-error"></span>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label asp-for="Location" class="form-label">
+                                        Konum
+                                    </label>
+                                    <input asp-for="Location"
+                                           class="form-control"
+                                           placeholder="Örn: Niğde, Türkiye" />
+                                    <span asp-validation-for="Location"
+                                          class="text-danger validation-error"></span>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- PROFESYONEL BİLGİLER -->
+                        <div class="mb-4">
+
+                            <div class="form-section-title">
+                                <i class="bi bi-briefcase me-2" style="color:#8276D9;"></i>
+                                Profesyonel Bilgiler
+                            </div>
+
+                            <div class="row g-3">
+
+                                <div class="col-md-6">
+                                    <label asp-for="Expert" class="form-label">
+                                        Uzmanlık Alanları
+                                    </label>
+                                    <input asp-for="Expert"
+                                           class="form-control"
+                                           placeholder="C#, ASP.NET Core, SQL Server..." />
+                                    <span asp-validation-for="Expert"
+                                          class="text-danger validation-error"></span>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label asp-for="OpenToWork" class="form-label">
+                                        İş Fırsatı Durumu
+                                    </label>
+                                    <input asp-for="OpenToWork"
+                                           class="form-control"
+                                           placeholder="Yeni iş fırsatlarına açığım." />
+                                    <span asp-validation-for="OpenToWork"
+                                          class="text-danger validation-error"></span>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- HAKKIMDA -->
+                        <div class="mb-4">
+
+                            <div class="form-section-title">
+                                <i class="bi bi-file-text me-2" style="color:#8276D9;"></i>
+                                Hakkımda & Biyografi
+                            </div>
+
+                            <label asp-for="Description" class="form-label">
+                                Kendinizi Tanıtın
+                            </label>
+
+                            <textarea asp-for="Description"
+                                      class="form-control"
+                                      rows="5"
+                                      placeholder="Kendinizden, eğitim hayatınızdan, teknik becerilerinizden ve kariyer hedeflerinizden bahsedin..."></textarea>
+
+                            <span asp-validation-for="Description"
+                                  class="text-danger validation-error"></span>
+
+                            <small class="text-muted d-block mt-2" style="font-size:11px;">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Bu açıklama ziyaretçiler tarafından portföyünüzün Hakkımda bölümünde görüntülenir.
+                            </small>
+                        </div>
+
+                        <!-- BUTONLAR -->
+                        <div class="d-flex flex-wrap gap-2 pt-3 border-top">
+
+                            <button type="submit" class="btn btn-save">
+                                <i class="bi bi-check2-circle me-2"></i>
+                                Değişiklikleri Kaydet
+                            </button>
+
+                            <a href="/Admin/Dashboard/Index" class="btn btn-cancel">
+                                <i class="bi bi-x-lg me-1"></i>
+                                Vazgeç
+                            </a>
+
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

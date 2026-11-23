@@ -1,0 +1,57 @@
+@model List<MYAcademy_Portfolio.Entities.Skill>
+
+<!-- Technical Skills Section -->
+<section id="skills" style="background-color: var(--bg-secondary);">
+    <div class="container">
+        <div class="text-center mb-5 reveal-on-scroll">
+            <span class="section-eyebrow">TEKNİK YETKİNLİKLER</span>
+            <h2 class="section-title">Yeteneklerim</h2>
+            <p class="section-subtitle">Fikirleri çalışan yazılımlara dönüştürürken kullandığım teknolojiler ve yetkinlik seviyelerim.</p>
+        </div>
+
+        @if (Model == null || !Model.Any())
+        {
+            <div class="text-center py-4 text-secondary">
+                <i class="bi bi-code-slash fs-2 d-block mb-2"></i>
+                <p class="mb-0">Henüz aktif yetenek bilgisi eklenmemiştir.</p>
+            </div>
+        }
+        else
+        {
+            var categories = Model
+                .GroupBy(s => string.IsNullOrWhiteSpace(s.Category) ? "Genel Yetenekler" : s.Category)
+                .ToList();
+
+            <div class="row g-4">
+                @foreach (var group in categories)
+                {
+                    <div class="col-lg-6 reveal-on-scroll">
+                        <div class="skill-group-card p-4 rounded-4 bg-white shadow-sm h-100">
+                            <div class="d-flex align-items-center gap-3 mb-4">
+                                <div class="float-icon-box bg-icon-purple">
+                                    <i class="bi bi-award-fill"></i>
+                                </div>
+                                <h4 class="fs-5 fw-bold mb-0">@group.Key</h4>
+                            </div>
+
+                            <div class="skill-list d-flex flex-column gap-3">
+                                @foreach (var skill in group)
+                                {
+                                    <div>
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <span class="fw-semibold text-dark small">@skill.Name</span>
+                                            <span class="text-primary fw-bold small">%@skill.Percentage</span>
+                                        </div>
+                                        <div class="progress" role="progressbar" aria-label="@skill.Name" aria-valuenow="@skill.Percentage" aria-valuemin="0" aria-valuemax="100" style="height: 8px; border-radius: 999px; background-color: #e2e8f0;">
+                                            <div class="progress-bar" style="width: @(skill.Percentage)%; border-radius: 999px; background: linear-gradient(135deg, #6366f1, #a855f7);"></div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</section>

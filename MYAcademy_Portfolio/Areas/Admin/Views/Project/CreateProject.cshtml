@@ -1,0 +1,105 @@
+﻿@model MYAcademy_Portfolio.Entities.Project
+
+@{
+    ViewData["Title"] = "Yeni Proje Ekle";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="container-fluid">
+
+    <div class="mb-4">
+        <h3>Yeni Proje Ekle</h3>
+        <p class="text-muted">Proje bilgilerini doldurarak yeni bir kayıt oluşturun.</p>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <form asp-action="CreateProject"
+                  method="post"
+                  enctype="multipart/form-data">
+
+                <div class="mb-3">
+                    <label asp-for="Title" class="form-label">Proje Adı</label>
+
+                    <input asp-for="Title"
+                           class="form-control"
+                           placeholder="Proje adını giriniz" />
+
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Description" class="form-label">Proje Açıklaması</label>
+
+                    <textarea asp-for="Description"
+                              class="form-control"
+                              rows="5"
+                              placeholder="Proje hakkında açıklama yazınız"></textarea>
+
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="CategoryId" class="form-label">Kategori</label>
+
+                    <select asp-for="CategoryId"
+                            asp-items="ViewBag.Categories"
+                            class="form-select">
+                        <option value="">Kategori seçiniz</option>
+                    </select>
+
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="GitHubUrl" class="form-label">GitHub Linki</label>
+
+                    <input asp-for="GitHubUrl"
+                           class="form-control"
+                           placeholder="https://github.com/kullanici/proje" />
+
+                    <span asp-validation-for="GitHubUrl" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Proje Kapak Görseli</label>
+
+                    <input type="file"
+                           name="coverImage"
+                           class="form-control"
+                           accept=".jpg,.jpeg,.png,.webp" />
+
+                    <small class="text-muted">
+                        JPG, JPEG, PNG veya WEBP. En fazla 5 MB.
+                    </small>
+
+                    <span asp-validation-for="CoverImageUrl" class="text-danger"></span>
+                </div>
+
+                <div class="form-check mb-4">
+                    <input asp-for="IsActive" class="form-check-input" />
+
+                    <label asp-for="IsActive" class="form-check-label">
+                        Proje aktif olarak yayınlansın
+                    </label>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle"></i> Projeyi Kaydet
+                    </button>
+
+                    <a asp-action="ProjectList" class="btn btn-secondary">
+                        Vazgeç
+                    </a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -7,7 +7,7 @@ namespace MYAcademy_Portfolio.Areas.Admin.Controllers
     {
         public IActionResult Index()
         {
-            return RedirectToAction("ExperienceList", "Experience", new { area = "Admin" });
+            return View();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿@model MYAcademy_Portfolio.Entities.Message
+
 @{
     ViewData["Title"] = "Yeni Mesaj";
     Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
@@ -11,10 +12,11 @@
             border: 1px solid var(--border-color);
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow-subtle);
+            overflow: hidden;
         }
 
         .form-card-header {
-            padding: 20px 26px;
+            padding: 20px 24px;
             border-bottom: 1px solid var(--border-color);
             display: flex;
             align-items: center;
@@ -35,35 +37,42 @@
         }
 
         .form-card-body {
-            padding: 26px;
+            padding: 24px;
         }
 
         .form-card-footer {
-            padding: 16px 26px;
+            padding: 16px 24px;
             border-top: 1px solid var(--border-color);
             background: #FAFBFE;
-            border-radius: 0 0 var(--radius-lg) var(--radius-lg);
             display: flex;
             justify-content: flex-end;
             gap: 10px;
+            flex-wrap: wrap;
         }
 
         .form-label {
-            font-size: 0.83rem;
+            font-size: .83rem;
             font-weight: 600;
-            margin-bottom: 6px;
+            margin-bottom: 7px;
+            color: var(--text-primary);
         }
 
-            .form-label .req {
-                color: #c0342b;
-            }
+        .req {
+            color: #C0342B;
+        }
 
         .form-control {
             border-radius: 10px;
             border: 1px solid #DCE1ED;
-            padding: 9px 13px;
-            font-size: 0.88rem;
+            padding: 10px 13px;
+            font-size: .88rem;
+            box-shadow: none;
         }
+
+            .form-control:focus {
+                border-color: var(--primary-accent);
+                box-shadow: 0 0 0 3px rgba(130,118,217,.12);
+            }
 
         .input-icon-wrap {
             position: relative;
@@ -83,7 +92,7 @@
             }
 
         .char-counter {
-            font-size: 0.75rem;
+            font-size: .75rem;
             color: var(--text-secondary);
         }
 
@@ -94,7 +103,6 @@
             border-radius: 12px;
             font-weight: 600;
             padding: 9px 20px;
-            box-shadow: 0 4px 12px rgba(130, 118, 217, 0.25);
         }
 
             .btn-accent:hover {
@@ -106,9 +114,9 @@
             background: #fff;
             border: 1px solid var(--border-color);
             color: var(--text-primary);
-            border-radius: 12px;
-            font-weight: 500;
+            border-radius: 10px;
             padding: 9px 18px;
+            font-weight: 500;
         }
 
             .btn-soft:hover {
@@ -117,105 +125,177 @@
             }
 
         .info-card {
-            background: linear-gradient(145deg, #3C446B, #59658D);
+            background: #fff;
+            border: 1px solid var(--border-color);
             border-radius: var(--radius-lg);
-            padding: 22px;
-            color: #DCE2F5;
+            box-shadow: var(--shadow-subtle);
+            overflow: hidden;
         }
 
-            .info-card h6 {
-                color: #fff;
-                font-weight: 700;
-            }
+        .info-card-header {
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-card-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: var(--pastel-purple);
+            color: var(--primary-accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .info-card-body {
+            padding: 20px;
+        }
 
         .info-item {
             display: flex;
-            gap: 10px;
-            font-size: 0.82rem;
-            margin-top: 14px;
-            line-height: 1.45;
+            gap: 12px;
+            margin-bottom: 18px;
+            font-size: .83rem;
+            line-height: 1.5;
+            color: var(--text-secondary);
         }
 
+            .info-item:last-child {
+                margin-bottom: 0;
+            }
+
             .info-item i {
-                color: #A294F9;
-                font-size: 1rem;
+                color: var(--primary-accent);
+                font-size: 1.05rem;
+                flex-shrink: 0;
             }
 
         .field-validation-error {
-            font-size: 0.78rem;
-            color: #c0342b;
+            font-size: .78rem;
+            color: #C0342B;
+        }
+
+        .validation-summary-errors {
+            color: #C0342B;
+            font-size: .85rem;
         }
     </style>
 }
 
 <div class="row g-4">
-    <!-- FORM -->
     <div class="col-lg-8">
         <div class="form-card">
-            <form asp-area="Admin" asp-action="CreateMessage" method="post">
+            <form asp-area="Admin"
+                  asp-controller="Message"
+                  asp-action="CreateMessage"
+                  method="post">
+
+                @Html.AntiForgeryToken()
 
                 <div class="form-card-header">
-                    <div class="form-card-icon"><i class="bi bi-send"></i></div>
+                    <div class="form-card-icon">
+                        <i class="bi bi-send"></i>
+                    </div>
                     <div>
-                        <h5 class="mb-0 fw-bold">Yeni Mesaj Oluştur</h5>
-                        <small class="text-secondary">Gönderici bilgilerini ve mesaj içeriğini doldurun.</small>
+                        <h5 class="mb-1 fw-bold">Yeni Mesaj Oluştur</h5>
+                        <small class="text-secondary">
+                            Gönderici bilgilerini ve mesaj içeriğini doldurun.
+                        </small>
                     </div>
                 </div>
 
                 <div class="form-card-body">
-                    <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2"></div>
+                    <div asp-validation-summary="ModelOnly"
+                         class="alert alert-danger py-2"></div>
 
                     <div class="row g-4">
-                        <!-- Ad Soyad -->
                         <div class="col-md-6">
-                            <label asp-for="NameSurname" class="form-label">Ad Soyad <span class="req">*</span></label>
+                            <label asp-for="NameSurname" class="form-label">
+                                Ad Soyad <span class="req">*</span>
+                            </label>
                             <div class="input-icon-wrap">
                                 <i class="bi bi-person"></i>
-                                <input asp-for="NameSurname" class="form-control" placeholder="Örn: Ahmet Yılmaz" required />
+                                <input asp-for="NameSurname"
+                                       class="form-control"
+                                       placeholder="Örn: Ahmet Yılmaz"
+                                       required />
                             </div>
-                            <span asp-validation-for="NameSurname"></span>
+                            <span asp-validation-for="NameSurname"
+                                  class="field-validation-error"></span>
                         </div>
 
-                        <!-- Email -->
                         <div class="col-md-6">
-                            <label asp-for="Email" class="form-label">E-posta <span class="req">*</span></label>
+                            <label asp-for="Email" class="form-label">
+                                E-posta <span class="req">*</span>
+                            </label>
                             <div class="input-icon-wrap">
                                 <i class="bi bi-envelope"></i>
-                                <input asp-for="Email" type="email" class="form-control" placeholder="ornek@mail.com" required />
+                                <input asp-for="Email"
+                                       type="email"
+                                       class="form-control"
+                                       placeholder="ornek@mail.com"
+                                       required />
                             </div>
-                            <span asp-validation-for="Email"></span>
+                            <span asp-validation-for="Email"
+                                  class="field-validation-error"></span>
                         </div>
 
-                        <!-- Konu -->
                         <div class="col-12">
-                            <label asp-for="Subject" class="form-label">Konu <span class="req">*</span></label>
+                            <label asp-for="Subject" class="form-label">
+                                Konu <span class="req">*</span>
+                            </label>
                             <div class="input-icon-wrap">
                                 <i class="bi bi-chat-left-text"></i>
-                                <input asp-for="Subject" class="form-control" placeholder="Örn: Proje Hakkında" required />
+                                <input asp-for="Subject"
+                                       class="form-control"
+                                       placeholder="Örn: Proje Hakkında"
+                                       required />
                             </div>
-                            <span asp-validation-for="Subject"></span>
+                            <span asp-validation-for="Subject"
+                                  class="field-validation-error"></span>
                         </div>
 
-                        <!-- Mesaj -->
                         <div class="col-12">
                             <div class="d-flex justify-content-between align-items-end">
-                                <label asp-for="MessageDetail" class="form-label">Mesaj <span class="req">*</span></label>
-                                <span class="char-counter mb-1"><span id="charCount">0</span> / 2000</span>
+                                <label asp-for="MessageDetail" class="form-label">
+                                    Mesaj <span class="req">*</span>
+                                </label>
+                                <span class="char-counter mb-1">
+                                    <span id="charCount">0</span> / 2000
+                                </span>
                             </div>
-                            <textarea asp-for="MessageDetail" id="messageDetail" class="form-control" rows="7" maxlength="2000"
-                                      placeholder="Mesajınızı buraya yazın..." required></textarea>
-                            <span asp-validation-for="MessageDetail"></span>
+
+                            <textarea asp-for="MessageDetail"
+                                      id="messageDetail"
+                                      class="form-control"
+                                      rows="7"
+                                      maxlength="2000"
+                                      placeholder="Mesajınızı buraya yazın..."
+                                      required></textarea>
+
+                            <span asp-validation-for="MessageDetail"
+                                  class="field-validation-error"></span>
                         </div>
                     </div>
                 </div>
 
                 <div class="form-card-footer">
-                    <a asp-area="Admin" asp-action="MessageList" class="btn btn-soft">
+                    <a asp-area="Admin"
+                       asp-controller="Message"
+                       asp-action="MessageList"
+                       class="btn btn-soft">
                         <i class="bi bi-arrow-left me-1"></i> Vazgeç
                     </a>
+
                     <button type="reset" class="btn btn-soft">
                         <i class="bi bi-arrow-counterclockwise me-1"></i> Temizle
                     </button>
+
                     <button type="submit" class="btn btn-accent">
                         <i class="bi bi-send me-1"></i> Mesajı Gönder
                     </button>
@@ -224,23 +304,42 @@
         </div>
     </div>
 
-    <!-- BİLGİ KARTI -->
     <div class="col-lg-4">
         <div class="info-card">
-            <h6 class="mb-1"><i class="bi bi-info-circle me-1"></i> Bilgilendirme</h6>
-            <small class="text-white-50">Mesaj kaydedilirken bazı alanlar otomatik doldurulur.</small>
+            <div class="info-card-header">
+                <div class="info-card-icon">
+                    <i class="bi bi-info-circle"></i>
+                </div>
+                <div>
+                    <h6 class="fw-bold mb-0">Bilgilendirme</h6>
+                    <small class="text-secondary">Mesaj hakkında</small>
+                </div>
+            </div>
 
-            <div class="info-item">
-                <i class="bi bi-calendar-check"></i>
-                <span><strong class="text-white">Gönderim tarihi</strong> kayıt anında otomatik olarak atanır.</span>
-            </div>
-            <div class="info-item">
-                <i class="bi bi-envelope-open"></i>
-                <span><strong class="text-white">Okunma durumu</strong> varsayılan olarak "Okunmadı" şeklinde kaydedilir.</span>
-            </div>
-            <div class="info-item">
-                <i class="bi bi-list-check"></i>
-                <span>Gönderdikten sonra <strong class="text-white">Mesaj Listesi</strong> sayfasına yönlendirilirsiniz.</span>
+            <div class="info-card-body">
+                <div class="info-item">
+                    <i class="bi bi-calendar-check"></i>
+                    <span>
+                        <strong class="d-block text-dark">Gönderim tarihi</strong>
+                        Kayıt anında otomatik olarak atanır.
+                    </span>
+                </div>
+
+                <div class="info-item">
+                    <i class="bi bi-envelope-open"></i>
+                    <span>
+                        <strong class="d-block text-dark">Okunma durumu</strong>
+                        Varsayılan olarak "Okunmadı" şeklinde kaydedilir.
+                    </span>
+                </div>
+
+                <div class="info-item">
+                    <i class="bi bi-list-check"></i>
+                    <span>
+                        <strong class="d-block text-dark">Yönlendirme</strong>
+                        Gönderdikten sonra Mesaj Listesi sayfasına yönlendirilirsiniz.
+                    </span>
+                </div>
             </div>
         </div>
     </div>
@@ -256,9 +355,11 @@
         }
 
         messageInput.addEventListener("input", updateCount);
-        document.querySelector("form").addEventListener("reset", () => setTimeout(updateCount, 0));
+
+        document.querySelector("form").addEventListener("reset", () => {
+            setTimeout(updateCount, 0);
+        });
+
         updateCount();
     </script>
 }
-
-

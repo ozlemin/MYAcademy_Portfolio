@@ -1,0 +1,59 @@
+﻿@model MYAcademy_Portfolio.Entities.Skill
+
+@{
+    ViewData["Title"] = "Yetenek Ekle";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="container-fluid">
+
+    <h2 class="mb-4">Yeni Yetenek Ekle</h2>
+
+    <form asp-action="CreateSkill" method="post">
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label">Yetenek Adı</label>
+            <input asp-for="Name"
+                   class="form-control"
+                   placeholder="Örn: C#, ASP.NET Core, SQL Server" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Percentage" class="form-label">Yetenek Seviyesi (%)</label>
+            <input asp-for="Percentage"
+                   type="number"
+                   min="1"
+                   max="100"
+                   class="form-control"
+                   placeholder="Örn: 75" />
+            <span asp-validation-for="Percentage" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Category" class="form-label">Kategori</label>
+            <input asp-for="Category"
+                   class="form-control"
+                   placeholder="Örn: Programlama, Veritabanı" />
+            <span asp-validation-for="Category" class="text-danger"></span>
+        </div>
+
+        <div class="form-check mb-3">
+            <input asp-for="IsActive" class="form-check-input" />
+            <label asp-for="IsActive" class="form-check-label">
+                Ziyaretçi tarafında göster
+            </label>
+        </div>
+
+        <button type="submit" class="btn btn-success">
+            <i class="bi bi-save"></i> Kaydet
+        </button>
+
+        <a asp-action="SkillList" class="btn btn-secondary">
+            Vazgeç
+        </a>
+
+    </form>
+</div>

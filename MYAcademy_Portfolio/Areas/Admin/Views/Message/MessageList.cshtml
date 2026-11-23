@@ -1,38 +1,625 @@
 @model List<MYAcademy_Portfolio.Entities.Message>
 
 @{
-    ViewData["Title"] = "MessageList";
+    ViewData["Title"] = "Gelen Mesajlar";
     Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+
+    var currentFilter = ViewBag.CurrentFilter as string ?? "all";
+    var currentSearch = ViewBag.CurrentSearch as string ?? "";
+    int totalCount = ViewBag.TotalCount ?? 0;
+    int unreadCount = ViewBag.UnreadCount ?? 0;
+    int readCount = ViewBag.ReadCount ?? 0;
 }
 
-<div class="container">
-    <br />
-    <table class="table table-bordered">
-        <tr>
-            <th>#</th>
-            <th>Gönderici</th>
-            <th>Email</th>
-            <th>Konu</th>
-            <th>Tarih</th>
-            <th>Mesajı Aç</th>
-            <th>Sil</th>
-        </tr>
-
-        @foreach(var item in Model)
-        {
-            <tr>
-                <td>@item.MessageId</td>
-                <td>@item.NameSurname</td>
-                <td>@item.Email</td>
-                <td>@item.Subject</td>
-                <td>@item.SendDate.ToString("dd MMM yyyy")</td>
-                <td><a href="/Admin/Message/MessageDetail/@item.MessageId" class="btn btn-primary">Mesajı Aç</a></td>
-                <td><a href="/Admin/Message/DeleteMessage/@item.MessageId" class="btn btn-danger">Mesajı Sil</a></td>
-            </tr>
+@section Styles {
+    <style>
+        .list-card {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-subtle);
+            overflow: hidden;
         }
 
+        .list-card-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
 
-    </table>
+        .list-card-body {
+            padding: 20px 24px;
+        }
+
+        .btn-accent {
+            background: var(--primary-accent);
+            border: 1px solid var(--primary-accent);
+            color: #fff;
+            border-radius: 12px;
+            font-weight: 600;
+            padding: 9px 18px;
+        }
+
+            .btn-accent:hover {
+                background: var(--primary-accent-hover);
+                color: #fff;
+            }
+
+        .btn-soft {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            border-radius: 10px;
+            padding: 7px 13px;
+        }
+
+            .btn-soft:hover {
+                background: #F8F9FD;
+                color: var(--primary-accent);
+            }
+
+        .btn-delete {
+            background: #fff;
+            border: 1px solid #F1CACA;
+            color: #C0342B;
+            border-radius: 10px;
+            padding: 7px 13px;
+        }
+
+            .btn-delete:hover {
+                background: #FFF1F1;
+                color: #C0342B;
+            }
+
+        .table {
+            vertical-align: middle;
+            margin-bottom: 0;
+        }
+
+            .table thead th {
+                color: var(--text-secondary);
+                font-size: .82rem;
+                font-weight: 600;
+                padding: 14px 12px;
+                background: #FAFBFE;
+                white-space: nowrap;
+            }
+
+            .table tbody td {
+                padding: 15px 12px;
+                font-size: .86rem;
+            }
+
+        .status-unread {
+            background: #FFF4DD;
+            color: #A66B00;
+            padding: 5px 11px;
+            border-radius: 20px;
+            font-size: .76rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .status-read {
+            background: #E8F7EF;
+            color: #238653;
+            padding: 5px 11px;
+            border-radius: 20px;
+            font-size: .76rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .empty-state {
+            padding: 45px 20px;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+            .empty-state i {
+                font-size: 2.5rem;
+                color: var(--primary-accent);
+            }
+
+        .filter-tabs {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+            .filter-tabs .btn {
+                border-radius: 10px !important;
+                font-size: .82rem;
+                font-weight: 600;
+                padding: 8px 13px;
+            }
+
+        .search-box {
+            border-radius: 10px;
+            border: 1px solid #DCE1ED;
+            padding: 10px 13px;
+            font-size: .88rem;
+        }
+
+            .search-box:focus {
+                border-color: var(--primary-accent);
+                box-shadow: 0 0 0 3px rgba(130,118,217,.12);
+            }
+
+        .message-sender {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .message-email {
+            color: var(--text-secondary);
+            font-size: .8rem;
+        }
+
+        .message-subject {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+    </style>
+}
+
+<div class="list-card">
+
+    <div class="list-card-header">
+      
+
+        <a asp-area="Admin"
+           asp-controller="Message"
+           asp-action="CreateMessage"
+           class="btn btn-accent">
+
+            <i class="bi bi-plus-circle me-1"></i>
+            Yeni Mesaj Oluştur
+        </a>
+    </div>
+
+    <div class="list-card-body">
+
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show">
+                <i class="bi bi-check-circle me-2"></i>
+                @TempData["Success"]
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show">
+                <i class="bi bi-exclamation-circle me-2"></i>
+                @TempData["Error"]
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        <!-- Filtreleme -->
+        <div class="filter-tabs mb-4">
+
+            <a asp-area="Admin"
+               asp-controller="Message"
+               asp-action="MessageList"
+               asp-route-filter="all"
+               asp-route-search="@currentSearch"
+               class="btn @(currentFilter == "all" ? "btn-accent" : "btn-soft")">
+
+                <i class="bi bi-inbox me-1"></i>
+                Tümü (@totalCount)
+            </a>
+
+            <a asp-area="Admin"
+               asp-controller="Message"
+               asp-action="MessageList"
+               asp-route-filter="unread"
+               asp-route-search="@currentSearch"
+               class="btn @(currentFilter == "unread" ? "btn-accent" : "btn-soft")">
+
+                <i class="bi bi-envelope me-1"></i>
+                Okunmamış (@unreadCount)
+            </a>
+
+            <a asp-area="Admin"
+               asp-controller="Message"
+               asp-action="MessageList"
+               asp-route-filter="read"
+               asp-route-search="@currentSearch"
+               class="btn @(currentFilter == "read" ? "btn-accent" : "btn-soft")">
+
+                <i class="bi bi-envelope-open me-1"></i>
+                Okunmuş (@readCount)
+            </a>
+
+        </div>
+
+        <!-- Arama -->
+        <form method="get"
+              asp-area="Admin"
+              asp-controller="Message"
+              asp-action="MessageList"
+              class="row g-2 mb-4">
+
+            <input type="hidden"
+                   name="filter"
+                   value="@currentFilter" />
+
+            <div class="col-md-10">
+                <input type="text"
+                       name="search"
+                       value="@currentSearch"
+                       class="form-control search-box"
+                       placeholder="Gönderen adı, e-posta, konu veya mesaj içeriğinde ara..." />
+            </div>
+
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-accent w-100">
+                    <i class="bi bi-search me-1"></i>
+                    Ara
+                </button>
+            </div>
+
+        </form>
+
+        <!-- Mesaj Tablosu -->
+        @if (Model == null || !Model.Any())
+        {
+            <div class="empty-state">
+                <i class="bi bi-envelope-paper d-block mb-3"></i>
+
+                <h6 class="fw-bold">
+                    Henüz mesaj kaydı bulunmuyor.
+                </h6>
+
+                <p class="small mb-0">
+                    Gelen mesajlar burada görüntülenecektir.
+                </p>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+
+                <table class="table table-hover">
+
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Durum</th>
+                            <th>Gönderen</th>
+                            <th>E-posta</th>
+                            <th>Konu</th>
+                            <th>Tarih</th>
+                            <th class="text-center">İşlemler</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var item in Model)
+                        {
+                            <tr id="message-row-@item.MessageId">
+
+                                <td>@item.MessageId</td>
+
+                                <td>
+                                    @if (!item.IsRead)
+                                    {
+                                        <span id="status-badge-@item.MessageId"
+                                              class="status-unread">
+                                            <i class="bi bi-envelope-fill me-1"></i>
+                                            Okunmadı
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span id="status-badge-@item.MessageId"
+                                              class="status-read">
+                                            <i class="bi bi-envelope-open me-1"></i>
+                                            Okundu
+                                        </span>
+                                    }
+                                </td>
+
+                                <td>
+                                    <span class="message-sender">
+                                        @item.NameSurname
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <a href="mailto:@item.Email"
+                                       class="message-email text-decoration-none">
+                                        @item.Email
+                                    </a>
+                                </td>
+
+                                <td>
+                                    <span class="message-subject">
+                                        @item.Subject
+                                    </span>
+                                </td>
+
+                                <td class="text-secondary small">
+                                    @item.SendDate.ToString("dd.MM.yyyy HH:mm")
+                                </td>
+
+                                <td>
+                                    <div class="d-flex justify-content-center gap-2">
+
+                                        <!-- Detay -->
+                                        <button type="button"
+                                                class="btn btn-soft btn-sm"
+                                                onclick="openMessageModal(@item.MessageId)"
+                                                title="Mesajı Görüntüle">
+
+                                            <i class="bi bi-eye"></i>
+                                            Aç
+                                        </button>
+
+                                        <!-- Okundu / Okunmadı -->
+                                        <form asp-area="Admin"
+                                              asp-controller="Message"
+                                              asp-action="ToggleReadStatus"
+                                              asp-route-id="@item.MessageId"
+                                              method="post">
+
+                                            @Html.AntiForgeryToken()
+
+                                            <button type="submit"
+                                                    class="btn btn-soft btn-sm"
+                                                    title="Okunma durumunu değiştir">
+
+                                                <i class="bi bi-envelope-check"></i>
+                                            </button>
+                                        </form>
+
+                                        <!-- Sil -->
+                                        <form asp-area="Admin"
+                                              asp-controller="Message"
+                                              asp-action="DeleteMessage"
+                                              asp-route-id="@item.MessageId"
+                                              method="post"
+                                              class="delete-form">
+
+                                            @Html.AntiForgeryToken()
+
+                                            <button type="button"
+                                                    class="btn btn-delete btn-sm btn-delete-confirm"
+                                                    data-name="@item.NameSurname">
+
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+
+                                    </div>
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+
+            </div>
+        }
+
+    </div>
 </div>
 
+<!-- MESAJ DETAY MODALI -->
+<div class="modal fade"
+     id="messageModal"
+     tabindex="-1"
+     aria-labelledby="messageModalLabel"
+     aria-hidden="true">
 
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+
+        <div class="modal-content border-0 shadow-lg rounded-4">
+
+            <div class="modal-header bg-light border-0 py-3">
+
+                <div>
+                    <h5 class="modal-title fw-bold" id="messageModalLabel">
+                        <i class="bi bi-envelope-open me-2"></i>
+                        Mesaj Detayı
+                    </h5>
+
+                    <small class="text-secondary" id="modalDate">-</small>
+                </div>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"></button>
+
+            </div>
+
+            <div class="modal-body p-4">
+
+                <div class="row g-3 mb-3">
+
+                    <div class="col-sm-6">
+                        <small class="text-secondary d-block">Gönderen</small>
+                        <strong id="modalSender">-</strong>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <small class="text-secondary d-block">E-posta</small>
+                        <a href="#" id="modalEmail">-</a>
+                    </div>
+
+                </div>
+
+                <div class="mb-3">
+                    <small class="text-secondary d-block">Konu</small>
+
+                    <div class="p-3 bg-light rounded-3 fw-semibold"
+                         id="modalSubject">
+                        -
+                    </div>
+                </div>
+
+                <div>
+                    <small class="text-secondary d-block mb-2">
+                        Mesaj İçeriği
+                    </small>
+
+                    <div class="p-3 bg-light rounded-3"
+                         id="modalDetail"
+                         style="white-space:pre-wrap; min-height:120px;">
+                        -
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="modal-footer border-0">
+
+                <a href="#"
+                   id="modalReply"
+                   class="btn btn-accent">
+
+                    <i class="bi bi-reply me-1"></i>
+                    E-posta ile Yanıtla
+                </a>
+
+                <button type="button"
+                        class="btn btn-soft"
+                        data-bs-dismiss="modal">
+                    Kapat
+                </button>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+
+        // Mesaj detayını getir
+        function openMessageModal(id) {
+
+            fetch('/Admin/Message/GetMessageDetail/' + id)
+
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Ağ hatası oluştu');
+                    }
+
+                    return response.json();
+                })
+
+                .then(data => {
+
+                    if (data.success) {
+
+                        document.getElementById('modalSender').innerText = data.nameSurname;
+
+                        document.getElementById('modalEmail').innerText = data.email;
+
+                        document.getElementById('modalEmail').href = 'mailto:' + data.email;
+
+                        document.getElementById('modalReply').href =
+                            'mailto:' + data.email +
+                            '?subject=Re: ' + encodeURIComponent(data.subject);
+
+                        document.getElementById('modalSubject').innerText = data.subject;
+
+                        document.getElementById('modalDate').innerText = data.date;
+
+                        document.getElementById('modalDetail').innerText = data.detail;
+
+                        // Okundu durumunu arayüzde güncelle
+                        const statusBadge =
+                            document.getElementById('status-badge-' + id);
+
+                        if (statusBadge) {
+                            statusBadge.className = 'status-read';
+
+                            statusBadge.innerHTML =
+                                '<i class="bi bi-envelope-open me-1"></i> Okundu';
+                        }
+
+                        const modalElement =
+                            document.getElementById('messageModal');
+
+                        const modal =
+                            new bootstrap.Modal(modalElement);
+
+                        modal.show();
+
+                    }
+                    else {
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Hata',
+                            text: data.message || 'Mesaj yüklenemedi.'
+                        });
+
+                    }
+
+                })
+
+                .catch(error => {
+
+                    console.error(error);
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Hata',
+                        text: 'Mesaj detayı alınırken bir hata oluştu.'
+                    });
+
+                });
+
+        }
+
+        // Mesaj silme onayı
+        document.querySelectorAll('.btn-delete-confirm').forEach(btn => {
+
+            btn.addEventListener('click', function () {
+
+                const name = this.dataset.name;
+                const form = this.closest('.delete-form');
+
+                Swal.fire({
+                    title: 'Silmek istediğinize emin misiniz?',
+                    text: `"${name}" tarafından gönderilen mesaj silinecek!`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc3545',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Evet, Sil!',
+                    cancelButtonText: 'İptal'
+                }).then(result => {
+
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+
+                });
+
+            });
+
+        });
+
+    </script>
+}
