@@ -5,42 +5,318 @@
     Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
 }
 
-<div class="container-fluid">
-    <div class="mb-4">
-        <h3>Yeni Kategori Ekle</h3>
-        <p class="text-muted">Yeni bir proje kategorisi oluşturun.</p>
-    </div>
+@section Styles {
+    <style>
+        .category-create-wrapper {
+            max-width: 1250px;
+            margin: 0 auto;
+        }
 
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <form asp-action="CreateCategory" method="post">
+        .page-header {
+            margin-bottom: 28px;
+        }
 
-                <div class="mb-3">
+            .page-header h3 {
+                color: #343B5C;
+                font-size: 23px;
+                font-weight: 700;
+                margin-bottom: 7px;
+            }
+
+            .page-header p {
+                color: #9297AA;
+                font-size: 13px;
+                margin: 0;
+            }
+
+        .create-card {
+            background: #fff;
+            border: 1px solid #EAECF2;
+            border-radius: 16px;
+            box-shadow: 0 5px 25px rgba(52, 59, 92, .04);
+            overflow: hidden;
+        }
+
+        .create-card-header {
+            padding: 23px 28px;
+            border-bottom: 1px solid #EEF0F5;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .header-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 13px;
+            background: #F0EDFF;
+            color: #8276D9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 21px;
+        }
+
+        .create-card-header h5 {
+            color: #343B5C;
+            font-size: 16px;
+            font-weight: 700;
+            margin: 0 0 4px;
+        }
+
+        .create-card-header span {
+            color: #969BAD;
+            font-size: 12px;
+        }
+
+        .create-card-body {
+            padding: 30px 28px;
+        }
+
+        .form-section-title {
+            color: #343B5C;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+
+            .form-section-title i {
+                color: #8276D9;
+                font-size: 17px;
+            }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        .form-label {
+            color: #555D77;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 9px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+            .input-wrapper i {
+                position: absolute;
+                left: 15px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #9A96C9;
+                font-size: 16px;
+                pointer-events: none;
+            }
+
+        .form-control {
+            border: 1px solid #E5E7EF;
+            border-radius: 9px;
+            padding: 13px 14px 13px 43px;
+            font-size: 13px;
+            color: #343B5C;
+            background: #FCFCFE;
+            box-shadow: none;
+            transition: all .2s ease;
+        }
+
+            .form-control:focus {
+                border-color: #8276D9;
+                background: #fff;
+                box-shadow: 0 0 0 3px rgba(130, 118, 217, .10);
+            }
+
+        .form-hint {
+            color: #9297AA;
+            font-size: 11px;
+            margin-top: 9px;
+        }
+
+        .validation-message {
+            font-size: 11px;
+            margin-top: 5px;
+        }
+
+        .info-box {
+            background: #F8F7FF;
+            border: 1px solid #EAE7FF;
+            border-radius: 11px;
+            padding: 16px;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+            .info-box i {
+                color: #8276D9;
+                font-size: 18px;
+            }
+
+            .info-box p {
+                color: #777D96;
+                font-size: 12px;
+                margin: 0;
+                line-height: 1.6;
+            }
+
+        .create-card-footer {
+            padding: 20px 28px;
+            background: #FCFCFE;
+            border-top: 1px solid #EEF0F5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-save {
+            background: #8276D9;
+            border: 1px solid #8276D9;
+            color: #fff;
+            border-radius: 9px;
+            padding: 11px 22px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: .2s;
+        }
+
+            .btn-save:hover {
+                background: #7063C5;
+                border-color: #7063C5;
+                color: #fff;
+                transform: translateY(-1px);
+            }
+
+        .btn-cancel {
+            background: #fff;
+            border: 1px solid #E3E5ED;
+            color: #697087;
+            border-radius: 9px;
+            padding: 11px 20px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: .2s;
+        }
+
+            .btn-cancel:hover {
+                background: #F3F3F8;
+                color: #343B5C;
+            }
+
+        @@media (max-width: 768px) {
+            .create-card-body {
+                padding: 22px 17px;
+            }
+
+            .create-card-header {
+                padding: 19px 17px;
+            }
+
+            .create-card-footer {
+                padding: 17px;
+                flex-direction: column-reverse;
+                align-items: stretch;
+            }
+
+                .create-card-footer a,
+                .create-card-footer button {
+                    width: 100%;
+                    text-align: center;
+                }
+        }
+    </style>
+}
+
+<div class="container-fluid category-create-wrapper">
+
+
+    <div class="create-card">
+
+        <div class="create-card-header">
+
+            <div class="header-icon">
+                <i class="bi bi-folder-plus"></i>
+            </div>
+
+            <div>
+               
+                <span>Oluşturmak istediğin kategorinin bilgilerini gir.</span>
+            </div>
+
+        </div>
+
+        <form asp-action="CreateCategory" method="post">
+
+            <div class="create-card-body">
+
+                <div class="form-section-title">
+                    <i class="bi bi-info-circle"></i>
+                    Kategori Detayları
+                </div>
+
+                <div class="form-group">
+
                     <label asp-for="CategoryName" class="form-label">
                         Kategori Adı
                     </label>
 
-                    <input asp-for="CategoryName"
-                           class="form-control"
-                           placeholder="Örn: Web Programlama" />
+                    <div class="input-wrapper">
+
+                        <i class="bi bi-folder2-open"></i>
+
+                        <input asp-for="CategoryName"
+                               class="form-control"
+                               placeholder="Örn: Web Programlama" />
+
+                    </div>
 
                     <span asp-validation-for="CategoryName"
-                          class="text-danger"></span>
+                          class="text-danger validation-message"></span>
+
+                    <div class="form-hint">
+                        <i class="bi bi-lightbulb me-1"></i>
+                        Kategorini kısa, anlaşılır ve projelerinle ilişkili bir isimle oluştur.
+                    </div>
+
                 </div>
 
-                <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-check-circle"></i> Kaydet
-                    </button>
+                <div class="info-box">
 
-                    <a asp-action="CategoryList" class="btn btn-secondary">
-                        Vazgeç
-                    </a>
+                    <i class="bi bi-info-circle-fill"></i>
+
+                    <p>
+                        Oluşturduğun kategori, projelerini gruplandırmak
+                        ve portföyünde daha düzenli bir şekilde sergilemek
+                        için kullanılacaktır.
+                    </p>
+
                 </div>
 
-            </form>
-        </div>
+            </div>
+
+            <div class="create-card-footer">
+
+                <a asp-action="CategoryList" class="btn-cancel">
+                    <i class="bi bi-arrow-left me-1"></i>
+                    Vazgeç
+                </a>
+
+                <button type="submit" class="btn-save">
+                    <i class="bi bi-check2-circle me-1"></i>
+                    Kategoriyi Kaydet
+                </button>
+
+            </div>
+
+        </form>
+
     </div>
+
 </div>
 
 @section Scripts {

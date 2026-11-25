@@ -5,20 +5,227 @@
     Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
 }
 
+@section Styles {
+    <style>
+        .project-wrapper {
+            max-width: 1250px;
+            margin: 0 auto;
+        }
+
+        .project-card {
+            background: #fff;
+            border: 1px solid #E9EAF2;
+            border-radius: 14px;
+            box-shadow: 0 4px 18px rgba(52, 59, 92, 0.05);
+            overflow: hidden;
+        }
+
+        .project-card-header {
+            padding: 22px 25px;
+            border-bottom: 1px solid #ECECF3;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+            .project-card-header h5 {
+                color: #343B5C;
+                font-size: 17px;
+                font-weight: 700;
+                margin: 0;
+            }
+
+        .project-count {
+            background: #F0EEFF;
+            color: #8276D9;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .project-table {
+            margin-bottom: 0;
+        }
+
+            .project-table thead th {
+                background: #F9F9FC;
+                color: #777D91;
+                font-size: 12px;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: .4px;
+                padding: 16px 20px;
+                border-bottom: 1px solid #ECECF3;
+                white-space: nowrap;
+            }
+
+            .project-table tbody td {
+                padding: 16px 20px;
+                vertical-align: middle;
+                color: #555B70;
+                font-size: 13px;
+                border-bottom: 1px solid #F0F0F5;
+            }
+
+            .project-table tbody tr:last-child td {
+                border-bottom: none;
+            }
+
+            .project-table tbody tr:hover {
+                background: #FAFAFE;
+            }
+
+        .project-image {
+            width: 75px;
+            height: 55px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #ECECF3;
+        }
+
+        .project-image-empty {
+            width: 75px;
+            height: 55px;
+            background: #F5F4FA;
+            color: #999BB0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .project-title {
+            color: #343B5C;
+            font-weight: 600;
+        }
+
+        .category-label {
+            background: #F3F1FF;
+            color: #7468C7;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-active {
+            background: #E8F7EF;
+            color: #26965B;
+            padding: 6px 11px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .status-passive {
+            background: #F0F0F3;
+            color: #777D91;
+            padding: 6px 11px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .project-action {
+            width: 34px;
+            height: 34px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            border: none;
+            text-decoration: none;
+            font-size: 14px;
+            transition: .2s ease;
+        }
+
+        .edit-action {
+            background: #F0EEFF;
+            color: #8276D9;
+        }
+
+            .edit-action:hover {
+                background: #8276D9;
+                color: #fff;
+            }
+
+        .delete-action {
+            background: #FFF0F0;
+            color: #DC6262;
+        }
+
+            .delete-action:hover {
+                background: #DC6262;
+                color: #fff;
+            }
+
+        .project-empty {
+            padding: 55px 20px !important;
+            text-align: center;
+            color: #9296A8 !important;
+        }
+
+            .project-empty i {
+                display: block;
+                font-size: 35px;
+                color: #B7B1E8;
+                margin-bottom: 12px;
+            }
+
+        .project-create-btn {
+            background: #8276D9;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 17px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: .2s ease;
+        }
+
+            .project-create-btn:hover {
+                background: #7064C5;
+                color: #fff;
+            }
+
+        .project-page-title {
+            color: #343B5C;
+            font-size: 21px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+    </style>
+}
+
 <div class="container-fluid">
+    <div class="project-wrapper">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      
+        <div class="d-flex justify-content-between align-items-center mb-4">
 
-        <a asp-action="CreateProject" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i> Yeni Proje Ekle
-        </a>
-    </div>
+            <a asp-action="CreateProject" class="project-create-btn">
+                <i class="bi bi-plus-circle me-1"></i>
+                Yeni Proje Ekle
+            </a>
+        </div>
 
-    <div class="card shadow-sm">
-        <div class="card-body">
+        <div class="project-card">
+
+            <div class="project-card-header">
+                <h5>
+                    <i class="bi bi-kanban me-2" style="color:#8276D9;"></i>
+                    Projelerim
+                </h5>
+
+                <span class="project-count">
+                    @(Model?.Count ?? 0) Proje
+                </span>
+            </div>
+
             <div class="table-responsive">
-                <table class="table table-hover align-middle">
+                <table class="table project-table align-middle">
 
                     <thead>
                         <tr>
@@ -41,38 +248,56 @@
                                         {
                                             <img src="@item.CoverImageUrl"
                                                  alt="@item.Title"
-                                                 style="width:75px;height:55px;object-fit:cover;border-radius:6px;" />
+                                                 class="project-image" />
                                         }
                                         else
                                         {
-                                            <span class="text-muted">Görsel yok</span>
+                                            <div class="project-image-empty">
+                                                <i class="bi bi-image"></i>
+                                            </div>
                                         }
                                     </td>
 
                                     <td>
-                                        <strong>@item.Title</strong>
+                                        <span class="project-title">
+                                            @item.Title
+                                        </span>
                                     </td>
 
                                     <td>
-                                        @(item.Category?.CategoryName ?? "Kategori yok")
+                                        @if (!string.IsNullOrEmpty(item.Category?.CategoryName))
+                                        {
+                                            <span class="category-label">
+                                                @item.Category.CategoryName
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">Kategori yok</span>
+                                        }
                                     </td>
 
                                     <td>
                                         @if (item.IsActive)
                                         {
-                                            <span class="badge bg-success">Aktif</span>
+                                            <span class="status-active">
+                                                <i class="bi bi-check-circle me-1"></i> Aktif
+                                            </span>
                                         }
                                         else
                                         {
-                                            <span class="badge bg-secondary">Pasif</span>
+                                            <span class="status-passive">
+                                                <i class="bi bi-pause-circle me-1"></i> Pasif
+                                            </span>
                                         }
                                     </td>
 
                                     <td class="text-end">
                                         <a asp-action="UpdateProject"
                                            asp-route-id="@item.ProjectId"
-                                           class="btn btn-sm btn-warning">
-                                            <i class="bi bi-pencil"></i> Düzenle
+                                           class="project-action edit-action"
+                                           title="Düzenle">
+                                            <i class="bi bi-pencil"></i>
                                         </a>
 
                                         <form asp-action="DeleteProject"
@@ -81,8 +306,10 @@
                                               class="d-inline"
                                               onsubmit="return confirm('Bu projeyi silmek istediğinize emin misiniz?');">
 
-                                            <button type="submit" class="btn btn-sm btn-danger">
-                                                <i class="bi bi-trash"></i> Sil
+                                            <button type="submit"
+                                                    class="project-action delete-action"
+                                                    title="Sil">
+                                                <i class="bi bi-trash"></i>
                                             </button>
                                         </form>
                                     </td>
@@ -92,7 +319,8 @@
                         else
                         {
                             <tr>
-                                <td colspan="5" class="text-center text-muted py-4">
+                                <td colspan="5" class="project-empty">
+                                    <i class="bi bi-folder2-open"></i>
                                     Henüz proje eklenmemiş.
                                 </td>
                             </tr>

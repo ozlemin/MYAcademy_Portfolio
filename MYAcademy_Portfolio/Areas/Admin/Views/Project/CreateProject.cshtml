@@ -5,94 +5,365 @@
     Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
 }
 
+@section Styles {
+    <style>
+        .project-create-wrapper {
+            max-width: 1250px;
+            margin: 0 auto;
+        }
+
+        .project-create-header {
+            margin-bottom: 24px;
+        }
+
+            .project-create-header h3 {
+                color: #343B5C;
+                font-size: 22px;
+                font-weight: 700;
+                margin-bottom: 7px;
+            }
+
+            .project-create-header p {
+                color: #9296A8;
+                font-size: 13px;
+                margin-bottom: 0;
+            }
+
+        .project-create-card {
+            background: #fff;
+            border: 1px solid #E9EAF2;
+            border-radius: 14px;
+            box-shadow: 0 4px 18px rgba(52, 59, 92, 0.05);
+            overflow: hidden;
+        }
+
+        .project-card-header {
+            padding: 22px 26px;
+            border-bottom: 1px solid #ECECF3;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .project-header-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 11px;
+            background: #F0EEFF;
+            color: #8276D9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .project-card-header h5 {
+            color: #343B5C;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .project-card-header p {
+            color: #9296A8;
+            font-size: 12px;
+            margin: 0;
+        }
+
+        .project-card-body {
+            padding: 30px 28px;
+        }
+
+        .project-form-label {
+            color: #343B5C;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 9px;
+        }
+
+        .project-form-control {
+            min-height: 46px;
+            border: 1px solid #E4E5ED;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #343B5C;
+            padding: 11px 14px;
+            box-shadow: none !important;
+            transition: .2s ease;
+        }
+
+            .project-form-control:focus {
+                border-color: #8276D9;
+                box-shadow: 0 0 0 3px rgba(130, 118, 217, 0.10) !important;
+            }
+
+            .project-form-control::placeholder {
+                color: #B2B4C1;
+            }
+
+        textarea.project-form-control {
+            min-height: 140px;
+            resize: vertical;
+        }
+
+        .project-form-group {
+            margin-bottom: 23px;
+        }
+
+        .project-form-hint {
+            display: block;
+            color: #9296A8;
+            font-size: 11px;
+            margin-top: 7px;
+        }
+
+        .project-upload-area {
+            background: #FAFAFD;
+            border: 1px dashed #D9D6F0;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+            .project-upload-area .project-form-control {
+                background: #fff;
+            }
+
+        .project-upload-icon {
+            width: 38px;
+            height: 38px;
+            background: #F0EEFF;
+            color: #8276D9;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .project-active-box {
+            background: #FAFAFD;
+            border: 1px solid #ECECF3;
+            border-radius: 9px;
+            padding: 16px 18px;
+        }
+
+            .project-active-box .form-check-input {
+                cursor: pointer;
+                width: 17px;
+                height: 17px;
+                margin-top: 2px;
+            }
+
+                .project-active-box .form-check-input:checked {
+                    background-color: #8276D9;
+                    border-color: #8276D9;
+                }
+
+            .project-active-box .form-check-label {
+                color: #343B5C;
+                font-size: 13px;
+                font-weight: 600;
+                cursor: pointer;
+            }
+
+        .project-form-footer {
+            background: #FCFCFE;
+            border-top: 1px solid #ECECF3;
+            padding: 19px 28px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .project-btn-save {
+            background: #8276D9;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 11px 20px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: .2s ease;
+        }
+
+            .project-btn-save:hover {
+                background: #7064C5;
+                color: #fff;
+            }
+
+        .project-btn-cancel {
+            background: #fff;
+            color: #6F7488;
+            border: 1px solid #E1E2EA;
+            border-radius: 8px;
+            padding: 11px 20px;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: .2s ease;
+        }
+
+            .project-btn-cancel:hover {
+                background: #F4F4F8;
+                color: #343B5C;
+            }
+
+        .text-danger {
+            font-size: 11px;
+            margin-top: 5px;
+            display: block;
+        }
+
+        @@media (max-width: 768px) {
+            .project-card-body {
+                padding: 22px 17px;
+            }
+
+            .project-card-header {
+                padding: 18px;
+            }
+
+            .project-form-footer {
+                padding: 16px 18px;
+            }
+
+            .project-create-header h3 {
+                font-size: 19px;
+            }
+        }
+    </style>
+}
+
 <div class="container-fluid">
+    <div class="project-create-wrapper">
 
-    <div class="mb-4">
-        <h3>Yeni Proje Ekle</h3>
-        <p class="text-muted">Proje bilgilerini doldurarak yeni bir kayıt oluşturun.</p>
-    </div>
+        <div class="project-create-header">
+          
+        </div>
 
-    <div class="card shadow-sm">
-        <div class="card-body">
+        <div class="project-create-card">
+
+            <div class="project-card-header">
+                <div class="project-header-icon">
+                    <i class="bi bi-folder-plus"></i>
+                </div>
+
+                <div>
+                    
+                    <p>Projenin temel bilgilerini ve görselini ekle.</p>
+                </div>
+            </div>
 
             <form asp-action="CreateProject"
                   method="post"
                   enctype="multipart/form-data">
 
-                <div class="mb-3">
-                    <label asp-for="Title" class="form-label">Proje Adı</label>
+                <div class="project-card-body">
 
-                    <input asp-for="Title"
-                           class="form-control"
-                           placeholder="Proje adını giriniz" />
+                    <div class="project-form-group">
+                        <label asp-for="Title" class="project-form-label">
+                            Proje Adı
+                        </label>
 
-                    <span asp-validation-for="Title" class="text-danger"></span>
+                        <input asp-for="Title"
+                               class="form-control project-form-control"
+                               placeholder="Örn: Kişisel Portföy Web Sitesi" />
+
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+
+                    <div class="project-form-group">
+                        <label asp-for="Description" class="project-form-label">
+                            Proje Açıklaması
+                        </label>
+
+                        <textarea asp-for="Description"
+                                  class="form-control project-form-control"
+                                  rows="5"
+                                  placeholder="Projenin amacı, kullanılan teknolojiler ve özellikleri hakkında bilgi yazınız."></textarea>
+
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+
+                    <div class="project-form-group">
+                        <label asp-for="CategoryId" class="project-form-label">
+                            Proje Kategorisi
+                        </label>
+
+                        <select asp-for="CategoryId"
+                                asp-items="ViewBag.Categories"
+                                class="form-select project-form-control">
+                            <option value="">Kategori seçiniz</option>
+                        </select>
+
+                        <span asp-validation-for="CategoryId" class="text-danger"></span>
+                    </div>
+
+                    <div class="project-form-group">
+                        <label asp-for="GitHubUrl" class="project-form-label">
+                            GitHub Linki
+                        </label>
+
+                        <input asp-for="GitHubUrl"
+                               class="form-control project-form-control"
+                               placeholder="https://github.com/kullanici/proje" />
+
+                        <span asp-validation-for="GitHubUrl" class="text-danger"></span>
+
+                        <small class="project-form-hint">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Projenin GitHub depo bağlantısını ekleyebilirsin.
+                        </small>
+                    </div>
+
+                    <div class="project-form-group">
+                        <label class="project-form-label">
+                            Proje Kapak Görseli
+                        </label>
+
+                        <div class="project-upload-area">
+                            <div class="project-upload-icon">
+                                <i class="bi bi-cloud-arrow-up"></i>
+                            </div>
+
+                            <input type="file"
+                                   name="coverImage"
+                                   class="form-control project-form-control"
+                                   accept=".jpg,.jpeg,.png,.webp" />
+
+                            <small class="project-form-hint">
+                                JPG, JPEG, PNG veya WEBP formatında görsel yükleyebilirsin. En fazla 5 MB.
+                            </small>
+
+                            <span asp-validation-for="CoverImageUrl" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="project-active-box">
+                        <div class="form-check mb-0">
+                            <input asp-for="IsActive"
+                                   class="form-check-input" />
+
+                            <label asp-for="IsActive"
+                                   class="form-check-label">
+                                Proje aktif olarak yayınlansın
+                            </label>
+                        </div>
+                    </div>
+
                 </div>
 
-                <div class="mb-3">
-                    <label asp-for="Description" class="form-label">Proje Açıklaması</label>
-
-                    <textarea asp-for="Description"
-                              class="form-control"
-                              rows="5"
-                              placeholder="Proje hakkında açıklama yazınız"></textarea>
-
-                    <span asp-validation-for="Description" class="text-danger"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="CategoryId" class="form-label">Kategori</label>
-
-                    <select asp-for="CategoryId"
-                            asp-items="ViewBag.Categories"
-                            class="form-select">
-                        <option value="">Kategori seçiniz</option>
-                    </select>
-
-                    <span asp-validation-for="CategoryId" class="text-danger"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="GitHubUrl" class="form-label">GitHub Linki</label>
-
-                    <input asp-for="GitHubUrl"
-                           class="form-control"
-                           placeholder="https://github.com/kullanici/proje" />
-
-                    <span asp-validation-for="GitHubUrl" class="text-danger"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Proje Kapak Görseli</label>
-
-                    <input type="file"
-                           name="coverImage"
-                           class="form-control"
-                           accept=".jpg,.jpeg,.png,.webp" />
-
-                    <small class="text-muted">
-                        JPG, JPEG, PNG veya WEBP. En fazla 5 MB.
-                    </small>
-
-                    <span asp-validation-for="CoverImageUrl" class="text-danger"></span>
-                </div>
-
-                <div class="form-check mb-4">
-                    <input asp-for="IsActive" class="form-check-input" />
-
-                    <label asp-for="IsActive" class="form-check-label">
-                        Proje aktif olarak yayınlansın
-                    </label>
-                </div>
-
-                <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-check-circle"></i> Projeyi Kaydet
-                    </button>
-
-                    <a asp-action="ProjectList" class="btn btn-secondary">
+                <div class="project-form-footer">
+                    <a asp-action="ProjectList" class="project-btn-cancel">
+                        <i class="bi bi-arrow-left me-1"></i>
                         Vazgeç
                     </a>
+
+                    <button type="submit" class="project-btn-save">
+                        <i class="bi bi-check-circle me-1"></i>
+                        Projeyi Kaydet
+                    </button>
                 </div>
 
             </form>

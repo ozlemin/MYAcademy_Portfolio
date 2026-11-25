@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MYAcademy_Portfolio.Context;
 using MYAcademy_Portfolio.Entities;
@@ -10,24 +11,27 @@ public class MessageController(PortfolioContext context) : Controller
 {
     public IActionResult Index() => RedirectToAction(nameof(MessageList));
 
-    // Mesaj listesi (Arama ve filtreleme destekli)
+    // Mesaj listesi, arama ve filtreleme
+    [HttpGet]
     public IActionResult MessageList(string? search, string? filter)
     {
         var query = context.Messages.AsNoTracking().AsQueryable();
 
-        // Arama filtresi
+        // Arama işlemi
         if (!string.IsNullOrWhiteSpace(search))
         {
             var s = search.Trim();
+
             query = query.Where(x =>
                 x.NameSurname.Contains(s) ||
                 x.Email.Contains(s) ||
                 x.Subject.Contains(s) ||
                 x.MessageDetail.Contains(s));
+
             ViewBag.CurrentSearch = s;
         }
 
-        // Okundu / Okunmadı filtreleme
+        // Okundu / okunmadı filtreleme
         if (filter == "unread")
         {
             query = query.Where(x => !x.IsRead);
@@ -43,11 +47,12 @@ public class MessageController(PortfolioContext context) : Controller
             ViewBag.CurrentFilter = "all";
         }
 
-        // İstatistikler
+        // Mesaj istatistikleri
         ViewBag.TotalCount = context.Messages.Count();
         ViewBag.UnreadCount = context.Messages.Count(x => !x.IsRead);
         ViewBag.ReadCount = context.Messages.Count(x => x.IsRead);
 
+        // En yeni mesaj en üstte
         var values = query
             .OrderByDescending(x => x.SendDate)
             .ToList();
@@ -55,13 +60,20 @@ public class MessageController(PortfolioContext context) : Controller
         return View(values);
     }
 
-    // Modal için JSON veri döndürme & otomatik okundu işaretleme
+    // Mesaj detayını getir ve otomatik okundu olarak işaretle
     [HttpGet]
     public IActionResult GetMessageDetail(int id)
     {
         var message = context.Messages.Find(id);
+
         if (message == null)
-            return NotFound(new { success = false, message = "Mesaj bulunamadı." });
+        {
+            return NotFound(new
+            {
+                success = false,
+                message = "Mesaj bulunamadı."
+            });
+        }
 
         if (!message.IsRead)
         {
@@ -82,13 +94,16 @@ public class MessageController(PortfolioContext context) : Controller
         });
     }
 
-    // Doğrudan URL ile erişilirse (fallback)
+    // Mesaj detayına doğrudan URL ile erişilirse
     [HttpGet]
     public IActionResult MessageDetail(int id)
     {
         var message = context.Messages.Find(id);
+
         if (message == null)
+        {
             return NotFound();
+        }
 
         if (!message.IsRead)
         {
@@ -99,7 +114,7 @@ public class MessageController(PortfolioContext context) : Controller
         return RedirectToAction(nameof(MessageList));
     }
 
-    // Okundu / Okunmadı durumunu tersine çevirme
+    // Okundu / okunmadı durumunu değiştir
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult ToggleReadStatus(int id)
@@ -113,6 +128,7 @@ public class MessageController(PortfolioContext context) : Controller
         }
 
         message.IsRead = !message.IsRead;
+
         context.SaveChanges();
 
         TempData["Success"] = message.IsRead
@@ -122,42 +138,23 @@ public class MessageController(PortfolioContext context) : Controller
         return RedirectToAction(nameof(MessageList));
     }
 
-    // Yeni mesaj ekleme (Admin tarafından test için)
-    [HttpGet]
-    public IActionResult CreateMessage()
-    {
-        return View();
-    }
-
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public IActionResult CreateMessage(Message message)
-    {
-        if (!ModelState.IsValid)
-            return View(message);
-
-        message.SendDate = DateTime.Now;
-        message.IsRead = false;
-
-        context.Messages.Add(message);
-        context.SaveChanges();
-
-        TempData["Success"] = "Mesaj başarıyla kaydedildi.";
-        return RedirectToAction(nameof(MessageList));
-    }
-
-    // Mesaj silme
+    // Mesajı sil
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult DeleteMessage(int id)
     {
-        var value = context.Messages.Find(id);
-        if (value != null)
+        var message = context.Messages.Find(id);
+
+        if (message == null)
         {
-            context.Messages.Remove(value);
-            context.SaveChanges();
-            TempData["Success"] = "Mesaj başarıyla silindi.";
+            TempData["Error"] = "Mesaj bulunamadı.";
+            return RedirectToAction(nameof(MessageList));
         }
+
+        context.Messages.Remove(message);
+        context.SaveChanges();
+
+        TempData["Success"] = "Mesaj başarıyla silindi.";
 
         return RedirectToAction(nameof(MessageList));
     }

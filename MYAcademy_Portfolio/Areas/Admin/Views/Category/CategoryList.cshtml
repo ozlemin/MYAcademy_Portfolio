@@ -3,42 +3,356 @@
 @{
     ViewData["Title"] = "Kategori Listesi";
     Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+
+    int categoryCount = Model?.Count ?? 0;
 }
 
-<div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      
+@section Styles {
+    <style>
+        .category-wrapper {
+            max-width: 1250px;
+            margin: 0 auto;
+        }
 
-        <a href="/Admin/Category/CreateCategory" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i> Yeni Kategori Ekle
-        </a>
+        .page-header {
+            margin-bottom: 28px;
+        }
+
+            .page-header h3 {
+                color: #343B5C;
+                font-size: 23px;
+                font-weight: 700;
+                margin-bottom: 7px;
+            }
+
+            .page-header p {
+                color: #9297AA;
+                font-size: 13px;
+                margin: 0;
+            }
+
+        .category-summary {
+            background: #F5F3FF;
+            border: 1px solid #EAE6FF;
+            border-radius: 12px;
+            padding: 17px 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 23px;
+        }
+
+        .summary-icon {
+            width: 43px;
+            height: 43px;
+            background: #E9E5FF;
+            color: #8276D9;
+            border-radius: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .summary-text span {
+            display: block;
+            color: #9290AA;
+            font-size: 12px;
+            margin-bottom: 3px;
+        }
+
+        .summary-text strong {
+            color: #343B5C;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .category-card {
+            background: #fff;
+            border: 1px solid #EAECF2;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(52, 59, 92, .04);
+            overflow: hidden;
+        }
+
+        .category-card-header {
+            padding: 22px 25px;
+            border-bottom: 1px solid #EEF0F5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+            .category-card-header h5 {
+                color: #343B5C;
+                font-size: 15px;
+                font-weight: 700;
+                margin: 0 0 5px;
+            }
+
+            .category-card-header p {
+                color: #969BAD;
+                font-size: 12px;
+                margin: 0;
+            }
+
+        .btn-add-category {
+            background: #8276D9;
+            color: #fff;
+            border: 1px solid #8276D9;
+            border-radius: 9px;
+            padding: 10px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: .2s;
+            white-space: nowrap;
+        }
+
+            .btn-add-category:hover {
+                background: #7063C5;
+                color: #fff;
+                transform: translateY(-1px);
+            }
+
+        .category-table {
+            margin: 0;
+        }
+
+            .category-table thead th {
+                background: #FAFAFD;
+                color: #9297AA;
+                font-size: 11px;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: .5px;
+                padding: 16px 24px;
+                border-bottom: 1px solid #EEF0F5;
+                white-space: nowrap;
+            }
+
+            .category-table tbody td {
+                padding: 17px 24px;
+                color: #555D77;
+                font-size: 13px;
+                border-bottom: 1px solid #F0F1F5;
+                vertical-align: middle;
+            }
+
+            .category-table tbody tr:last-child td {
+                border-bottom: none;
+            }
+
+            .category-table tbody tr {
+                transition: .2s;
+            }
+
+                .category-table tbody tr:hover {
+                    background: #FAF9FF;
+                }
+
+        .category-id {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 34px;
+            height: 30px;
+            padding: 0 8px;
+            background: #F0EDFF;
+            color: #8276D9;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .category-name {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #343B5C;
+            font-weight: 600;
+        }
+
+        .category-name-icon {
+            width: 36px;
+            height: 36px;
+            background: #F5F3FF;
+            color: #8276D9;
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        .btn-edit,
+        .btn-delete {
+            width: 35px;
+            height: 35px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: .2s;
+            text-decoration: none;
+        }
+
+        .btn-edit {
+            background: #F0EDFF;
+            color: #8276D9;
+            border: 1px solid #E9E4FF;
+        }
+
+            .btn-edit:hover {
+                background: #8276D9;
+                color: #fff;
+            }
+
+        .btn-delete {
+            background: #FFF1F1;
+            color: #E36B72;
+            border: 1px solid #FFE3E3;
+        }
+
+            .btn-delete:hover {
+                background: #E36B72;
+                color: #fff;
+            }
+
+        .empty-state {
+            text-align: center;
+            padding: 55px 20px;
+        }
+
+        .empty-icon {
+            width: 65px;
+            height: 65px;
+            border-radius: 18px;
+            background: #F5F3FF;
+            color: #8276D9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 27px;
+            margin: 0 auto 17px;
+        }
+
+        .empty-state h5 {
+            color: #343B5C;
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 7px;
+        }
+
+        .empty-state p {
+            color: #9297AA;
+            font-size: 12px;
+            margin-bottom: 18px;
+        }
+
+        @@media(max-width: 768px) {
+            .category-card-header {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 18px;
+            }
+
+                .category-card-header .btn-add-category {
+                    width: 100%;
+                    text-align: center;
+                }
+
+            .category-table thead th,
+            .category-table tbody td {
+                padding: 13px 15px;
+            }
+
+            .category-name {
+                white-space: nowrap;
+            }
+        }
+    </style>
+}
+
+<div class="container-fluid category-wrapper">
+
+    <div class="category-summary">
+        <div class="summary-icon">
+            <i class="bi bi-grid"></i>
+        </div>
+
+        <div class="summary-text">
+            <span>Toplam Kategori</span>
+            <strong>@categoryCount</strong>
+        </div>
     </div>
 
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover align-middle">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Kategori Adı</th>
-                            <th class="text-end">İşlemler</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (Model != null && Model.Any())
+    <div class="category-card">
+
+        <div class="category-card-header">
+            <div>
+                <h5>Kategori Listesi</h5>
+                <p>Eklediğin kategorileri görüntüle ve düzenle.</p>
+            </div>
+
+            <a href="/Admin/Category/CreateCategory"
+               class="btn-add-category">
+                <i class="bi bi-plus-circle me-1"></i>
+                Yeni Kategori Ekle
+            </a>
+        </div>
+
+        <div class="table-responsive">
+
+            <table class="table category-table align-middle">
+
+                <thead>
+                    <tr>
+                        <th style="width: 100px;">ID</th>
+                        <th>Kategori Adı</th>
+                        <th class="text-end">İşlemler</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var item in Model)
                         {
-                            @foreach (var item in Model)
-                            {
-                                <tr>
-                                    <td>@item.CategoryId</td>
-                                    <td>
-                                        <strong>@item.CategoryName</strong>
-                                    </td>
-                                    <td class="text-end">
+                            <tr>
+
+                                <td>
+                                    <span class="category-id">
+                                        #@item.CategoryId
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <div class="category-name">
+                                        <div class="category-name-icon">
+                                            <i class="bi bi-folder2-open"></i>
+                                        </div>
+
+                                        @item.CategoryName
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div class="action-buttons">
+
                                         <a href="/Admin/Category/EditCategory/@item.CategoryId"
-                                           class="btn btn-sm btn-warning">
-                                            <i class="bi bi-pencil"></i> Düzenle
+                                           class="btn-edit"
+                                           title="Düzenle">
+                                            <i class="bi bi-pencil-square"></i>
                                         </a>
 
                                         <form asp-action="DeleteCategory"
@@ -47,25 +361,50 @@
                                               class="d-inline"
                                               onsubmit="return confirm('Bu kategoriyi silmek istediğinize emin misiniz?');">
 
-                                            <button type="submit" class="btn btn-sm btn-danger">
-                                                <i class="bi bi-trash"></i> Sil
+                                            <button type="submit"
+                                                    class="btn-delete"
+                                                    title="Sil">
+                                                <i class="bi bi-trash3"></i>
                                             </button>
+
                                         </form>
-                                    </td>
-                                </tr>
-                            }
-                        }
-                        else
-                        {
-                            <tr>
-                                <td colspan="3" class="text-center text-muted py-4">
-                                    Henüz kategori eklenmemiş.
+
+                                    </div>
                                 </td>
+
                             </tr>
                         }
-                    </tbody>
-                </table>
-            </div>
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="3">
+                                <div class="empty-state">
+
+                                    <div class="empty-icon">
+                                        <i class="bi bi-folder-x"></i>
+                                    </div>
+
+                                    <h5>Henüz kategori eklenmemiş</h5>
+
+                                    <p>Portföyünü düzenlemek için ilk kategorini oluşturabilirsin.</p>
+
+                                    <a href="/Admin/Category/CreateCategory"
+                                       class="btn-add-category">
+                                        <i class="bi bi-plus-circle me-1"></i>
+                                        İlk Kategorini Ekle
+                                    </a>
+
+                                </div>
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
         </div>
     </div>
+
 </div>

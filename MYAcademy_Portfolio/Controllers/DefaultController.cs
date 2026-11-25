@@ -40,10 +40,10 @@ namespace MYAcademy_Portfolio.Controllers
             if (!System.IO.File.Exists(path))
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(path)!);
-                System.IO.File.WriteAllText(path, "%PDF-1.4 Poyraz Alsever CV");
+                System.IO.File.WriteAllText(path, "%PDF-1.4 Özlem Bozkurt CV");
             }
 
-            return PhysicalFile(path, "application/pdf", "Poyraz_Alsever_CV.pdf");
+            return PhysicalFile(path, "application/pdf", "Özlem_Bozkurt_CV.pdf");
         }
     }
 }

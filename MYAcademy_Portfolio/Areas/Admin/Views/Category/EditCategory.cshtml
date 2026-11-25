@@ -5,46 +5,305 @@
     Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
 }
 
-<div class="container-fluid">
-    <div class="mb-4">
-        <h3>Kategori Düzenle</h3>
-        <p class="text-muted">Kategori bilgilerini güncelleyin.</p>
-    </div>
+@section Styles {
+    <style>
+        .category-edit-wrapper {
+            max-width: 1250px;
+            margin: 0 auto;
+        }
 
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <form asp-action="EditCategory"
-                  asp-route-id="@Model.CategoryId"
-                  method="post">
+        .category-header {
+            margin-bottom: 28px;
+        }
 
-                <input type="hidden" asp-for="CategoryId" />
+            .category-header h3 {
+                font-size: 1.5rem;
+                font-weight: 750;
+                color: #252b48;
+                margin-bottom: 7px;
+            }
 
-                <div class="mb-3">
-                    <label asp-for="CategoryName" class="form-label">
-                        Kategori Adı
-                    </label>
+            .category-header p {
+                color: #8b90a5;
+                font-size: .9rem;
+                margin: 0;
+            }
 
-                    <input asp-for="CategoryName"
-                           class="form-control"
-                           placeholder="Kategori adını giriniz" />
+        .category-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            color: #a0a3b3;
+            font-size: .8rem;
+            margin-bottom: 12px;
+        }
 
-                    <span asp-validation-for="CategoryName"
-                          class="text-danger"></span>
-                </div>
+            .category-breadcrumb span:last-child {
+                color: #8276d9;
+                font-weight: 600;
+            }
 
-                <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-check-circle"></i> Güncelle
-                    </button>
+        .category-card {
+            background: #fff;
+            border: 1px solid #ececf3;
+            border-radius: 18px;
+            box-shadow: 0 5px 25px rgba(35, 40, 75, .045);
+            overflow: hidden;
+        }
 
-                    <a asp-action="CategoryList" class="btn btn-secondary">
-                        Vazgeç
-                    </a>
-                </div>
+        .category-card-header {
+            padding: 23px 28px;
+            border-bottom: 1px solid #f0f0f5;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
 
-            </form>
+        .category-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 13px;
+            background: #f0edff;
+            color: #8276d9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .category-card-header h5 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #303550;
+            margin: 0 0 4px;
+        }
+
+        .category-card-header small {
+            color: #969aae;
+            font-size: .8rem;
+        }
+
+        .category-card-body {
+            padding: 30px;
+        }
+
+        .form-label {
+            font-size: .87rem;
+            font-weight: 650;
+            color: #414761;
+            margin-bottom: 9px;
+        }
+
+        .form-control {
+            min-height: 48px;
+            border: 1px solid #e5e6ef;
+            border-radius: 10px;
+            padding: 11px 14px;
+            font-size: .9rem;
+            color: #353a55;
+            transition: all .2s ease;
+        }
+
+            .form-control:focus {
+                border-color: #8276d9;
+                box-shadow: 0 0 0 3px rgba(130, 118, 217, .12);
+            }
+
+        .field-hint {
+            display: block;
+            margin-top: 9px;
+            color: #999daf;
+            font-size: .78rem;
+        }
+
+        .category-info {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 16px 18px;
+            background: #f8f7ff;
+            border: 1px solid #e9e6ff;
+            border-radius: 12px;
+            margin-top: 24px;
+        }
+
+            .category-info i {
+                color: #8276d9;
+                font-size: 1.05rem;
+                margin-top: 2px;
+            }
+
+            .category-info strong {
+                display: block;
+                color: #414761;
+                font-size: .85rem;
+                margin-bottom: 4px;
+            }
+
+            .category-info small {
+                color: #9296aa;
+                font-size: .78rem;
+                line-height: 1.6;
+            }
+
+        .category-footer {
+            padding: 20px 30px;
+            border-top: 1px solid #f0f0f5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn-save {
+            background: #8276d9;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 11px 23px;
+            font-size: .88rem;
+            font-weight: 650;
+            transition: .2s;
+        }
+
+            .btn-save:hover {
+                background: #7063c5;
+                color: white;
+                transform: translateY(-1px);
+            }
+
+        .btn-cancel {
+            background: #f3f3f7;
+            color: #62677d;
+            border: 1px solid #e9e9ef;
+            border-radius: 10px;
+            padding: 11px 20px;
+            font-size: .88rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: .2s;
+        }
+
+            .btn-cancel:hover {
+                background: #eaeaf1;
+                color: #343955;
+            }
+
+        @@media(max - width: 576px)
+
+        {
+            .category-card-body {
+                padding: 20px;
+            }
+
+            .category-card-header {
+                padding: 20px;
+            }
+
+            .category-footer {
+                padding: 18px 20px;
+            }
+
+                .category-footer button,
+                .category-footer a {
+                    flex: 1;
+                    text-align: center;
+                }
+        }
+    </style>
+}
+
+<div class="container-fluid category-edit-wrapper">
+
+    <div class="category-card">
+
+        <div class="category-card-header">
+
+            <div class="category-icon">
+                <i class="fas fa-folder-open"></i>
+            </div>
+
+            <div>
+                <h5>Kategori Detayları</h5>
+                <small>Mevcut kategori bilgilerini düzenle</small>
+            </div>
+
         </div>
+
+        <form asp-action="EditCategory"
+              asp-route-id="@Model.CategoryId"
+              method="post">
+
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" asp-for="CategoryId" />
+
+            <div class="category-card-body">
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-3"></div>
+
+                <div class="row">
+
+                    <div class="col-12">
+
+                        <label asp-for="CategoryName" class="form-label">
+                            <i class="fas fa-tag me-1 text-secondary"></i>
+                            Kategori Adı
+                        </label>
+
+                        <input asp-for="CategoryName"
+                               class="form-control"
+                               placeholder="Örn: Web Geliştirme, Backend, Frontend" />
+
+                        <span asp-validation-for="CategoryName"
+                              class="text-danger small"></span>
+
+                        <small class="field-hint">
+                            Kategorinin ziyaretçi tarafında ve yönetim panelinde kullanılacak adını gir.
+                        </small>
+
+                    </div>
+
+                    <div class="col-12">
+
+                        <div class="category-info">
+                            <i class="fas fa-info-circle"></i>
+
+                            <div>
+                                <strong>Kategori hakkında</strong>
+                                <small>
+                                    Kategori adını değiştirdiğinde bu kategoriye bağlı içeriklerin
+                                    ilişkilerini de kontrol etmeni öneririm.
+                                </small>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="category-footer">
+
+                <a asp-action="CategoryList" class="btn-cancel">
+                    <i class="fas fa-arrow-left me-1"></i>
+                    Vazgeç
+                </a>
+
+                <button type="submit" class="btn-save">
+                    <i class="fas fa-save me-2"></i>
+                    Değişiklikleri Kaydet
+                </button>
+
+            </div>
+
+        </form>
+
     </div>
+
 </div>
 
 @section Scripts {

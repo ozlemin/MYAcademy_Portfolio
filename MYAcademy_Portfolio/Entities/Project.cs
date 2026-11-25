@@ -15,9 +15,9 @@ namespace MYAcademy_Portfolio.Entities
         public string Description { get; set; }
 
         [StringLength(300)]
-        public string GitHubUrl { get; set; }
+        public string? GitHubUrl { get; set; }
 
-        public string CoverImageUrl { get; set; }
+        public string? CoverImageUrl { get; set; }
 
         public bool IsActive { get; set; }
 

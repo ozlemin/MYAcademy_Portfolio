@@ -10,6 +10,6 @@ namespace MYAcademy_Portfolio.Entities
         [StringLength(100, ErrorMessage = "Kategori adı en fazla 100 karakter olabilir.")]
         public string CategoryName { get; set; }
 
-        public List<Project> Projects { get; set; }
+        public List<Project> Projects { get; set; } = new List<Project>();
     }
 }

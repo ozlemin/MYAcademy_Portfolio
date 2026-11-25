@@ -6,6 +6,7 @@
 
     var currentFilter = ViewBag.CurrentFilter as string ?? "all";
     var currentSearch = ViewBag.CurrentSearch as string ?? "";
+
     int totalCount = ViewBag.TotalCount ?? 0;
     int unreadCount = ViewBag.UnreadCount ?? 0;
     int readCount = ViewBag.ReadCount ?? 0;
@@ -21,18 +22,8 @@
             overflow: hidden;
         }
 
-        .list-card-header {
-            padding: 20px 24px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
         .list-card-body {
-            padding: 20px 24px;
+            padding: 24px;
         }
 
         .btn-accent {
@@ -164,23 +155,23 @@
             font-weight: 500;
             color: var(--text-primary);
         }
+
+        .modal-message-detail {
+            white-space: pre-wrap;
+            min-height: 120px;
+            line-height: 1.7;
+            overflow-wrap: anywhere;
+        }
+
+        @@media (max-width: 768px) {
+            .list-card-body {
+                padding: 16px;
+            }
+        }
     </style>
 }
 
 <div class="list-card">
-
-    <div class="list-card-header">
-      
-
-        <a asp-area="Admin"
-           asp-controller="Message"
-           asp-action="CreateMessage"
-           class="btn btn-accent">
-
-            <i class="bi bi-plus-circle me-1"></i>
-            Yeni Mesaj Oluştur
-        </a>
-    </div>
 
     <div class="list-card-body">
 
@@ -192,7 +183,8 @@
 
                 <button type="button"
                         class="btn-close"
-                        data-bs-dismiss="alert"></button>
+                        data-bs-dismiss="alert">
+                </button>
             </div>
         }
 
@@ -204,9 +196,15 @@
 
                 <button type="button"
                         class="btn-close"
-                        data-bs-dismiss="alert"></button>
+                        data-bs-dismiss="alert">
+                </button>
             </div>
         }
+
+        <!-- Sayfa Başlığı -->
+        <div class="mb-4">
+        
+        </div>
 
         <!-- Filtreleme -->
         <div class="filter-tabs mb-4">
@@ -360,7 +358,7 @@
                                 <td>
                                     <div class="d-flex justify-content-center gap-2">
 
-                                        <!-- Detay -->
+                                        <!-- Mesaj Detayı -->
                                         <button type="button"
                                                 class="btn btn-soft btn-sm"
                                                 onclick="openMessageModal(@item.MessageId)"
@@ -387,7 +385,7 @@
                                             </button>
                                         </form>
 
-                                        <!-- Sil -->
+                                        <!-- Mesaj Silme -->
                                         <form asp-area="Admin"
                                               asp-controller="Message"
                                               asp-action="DeleteMessage"
@@ -399,7 +397,8 @@
 
                                             <button type="button"
                                                     class="btn btn-delete btn-sm btn-delete-confirm"
-                                                    data-name="@item.NameSurname">
+                                                    data-name="@item.NameSurname"
+                                                    title="Mesajı Sil">
 
                                                 <i class="bi bi-trash"></i>
                                             </button>
@@ -444,7 +443,8 @@
 
                 <button type="button"
                         class="btn-close"
-                        data-bs-dismiss="modal"></button>
+                        data-bs-dismiss="modal">
+                </button>
 
             </div>
 
@@ -478,9 +478,8 @@
                         Mesaj İçeriği
                     </small>
 
-                    <div class="p-3 bg-light rounded-3"
-                         id="modalDetail"
-                         style="white-space:pre-wrap; min-height:120px;">
+                    <div class="p-3 bg-light rounded-3 modal-message-detail"
+                         id="modalDetail">
                         -
                     </div>
                 </div>
@@ -520,7 +519,7 @@
 
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error('Ağ hatası oluştu');
+                        throw new Error('Mesaj bilgileri alınamadı.');
                     }
 
                     return response.json();
@@ -528,53 +527,52 @@
 
                 .then(data => {
 
-                    if (data.success) {
-
-                        document.getElementById('modalSender').innerText = data.nameSurname;
-
-                        document.getElementById('modalEmail').innerText = data.email;
-
-                        document.getElementById('modalEmail').href = 'mailto:' + data.email;
-
-                        document.getElementById('modalReply').href =
-                            'mailto:' + data.email +
-                            '?subject=Re: ' + encodeURIComponent(data.subject);
-
-                        document.getElementById('modalSubject').innerText = data.subject;
-
-                        document.getElementById('modalDate').innerText = data.date;
-
-                        document.getElementById('modalDetail').innerText = data.detail;
-
-                        // Okundu durumunu arayüzde güncelle
-                        const statusBadge =
-                            document.getElementById('status-badge-' + id);
-
-                        if (statusBadge) {
-                            statusBadge.className = 'status-read';
-
-                            statusBadge.innerHTML =
-                                '<i class="bi bi-envelope-open me-1"></i> Okundu';
-                        }
-
-                        const modalElement =
-                            document.getElementById('messageModal');
-
-                        const modal =
-                            new bootstrap.Modal(modalElement);
-
-                        modal.show();
-
+                    if (!data.success) {
+                        throw new Error(data.message || 'Mesaj yüklenemedi.');
                     }
-                    else {
 
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Hata',
-                            text: data.message || 'Mesaj yüklenemedi.'
-                        });
+                    document.getElementById('modalSender').innerText =
+                        data.nameSurname;
 
+                    document.getElementById('modalEmail').innerText =
+                        data.email;
+
+                    document.getElementById('modalEmail').href =
+                        'mailto:' + data.email;
+
+                    document.getElementById('modalReply').href =
+                        'mailto:' + data.email +
+                        '?subject=' + encodeURIComponent('Re: ' + data.subject);
+
+                    document.getElementById('modalSubject').innerText =
+                        data.subject;
+
+                    document.getElementById('modalDate').innerText =
+                        data.date;
+
+                    document.getElementById('modalDetail').innerText =
+                        data.detail;
+
+                    // Okundu durumunu listede güncelle
+                    const statusBadge =
+                        document.getElementById('status-badge-' + id);
+
+                    if (statusBadge) {
+
+                        statusBadge.className = 'status-read';
+
+                        statusBadge.innerHTML =
+                            '<i class="bi bi-envelope-open me-1"></i> Okundu';
                     }
+
+                    // Modalı aç
+                    const modalElement =
+                        document.getElementById('messageModal');
+
+                    const modal =
+                        bootstrap.Modal.getOrCreateInstance(modalElement);
+
+                    modal.show();
 
                 })
 
@@ -585,7 +583,7 @@
                     Swal.fire({
                         icon: 'error',
                         title: 'Hata',
-                        text: 'Mesaj detayı alınırken bir hata oluştu.'
+                        text: error.message || 'Mesaj detayı alınırken bir hata oluştu.'
                     });
 
                 });

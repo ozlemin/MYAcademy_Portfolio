@@ -5,55 +5,383 @@
     Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
 }
 
-<div class="container-fluid">
+@section Styles {
+    <style>
+        .skill-form {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-subtle);
+            overflow: hidden;
+        }
 
-    <h2 class="mb-4">Yeni Yetenek Ekle</h2>
+        .skill-header {
+            padding: 26px 30px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .skill-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 16px;
+            background: #F0EDFF;
+            color: #8276D9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .skill-body {
+            padding: 30px;
+        }
+
+        .section-heading {
+            font-size: .92rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            font-size: .82rem;
+            font-weight: 600;
+            color: #424A60;
+            margin-bottom: 8px;
+        }
+
+        .field-wrapper {
+            position: relative;
+        }
+
+            .field-wrapper > i {
+                position: absolute;
+                left: 14px;
+                top: 13px;
+                color: #9299AD;
+                pointer-events: none;
+            }
+
+            .field-wrapper .form-control,
+            .field-wrapper .form-select {
+                padding: 11px 14px 11px 42px;
+                border: 1px solid #E1E4ED;
+                border-radius: 11px;
+                font-size: .87rem;
+                background: #fff;
+                transition: .2s ease;
+            }
+
+                .field-wrapper .form-control:focus,
+                .field-wrapper .form-select:focus {
+                    border-color: #8276D9;
+                    box-shadow: 0 0 0 3px rgba(130,118,217,.10);
+                }
+
+        .percentage-hint {
+            font-size: .76rem;
+            color: #9299AD;
+            margin-top: 7px;
+        }
+
+        .skill-preview {
+            margin-top: 14px;
+            padding: 16px;
+            border: 1px solid #E8E6F4;
+            border-radius: 12px;
+            background: #FAF9FF;
+        }
+
+        .preview-track {
+            height: 8px;
+            background: #E8E6F4;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .preview-fill {
+            height: 100%;
+            width: 0%;
+            background: #8276D9;
+            border-radius: 20px;
+            transition: width .25s ease;
+        }
+
+        .status-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 16px;
+            border: 1px solid #E1E4ED;
+            border-radius: 11px;
+            min-height: 67px;
+        }
+
+        .form-switch .form-check-input {
+            width: 2.5em;
+            height: 1.3em;
+            cursor: pointer;
+        }
+
+        .form-check-input:checked {
+            background-color: #8276D9;
+            border-color: #8276D9;
+        }
+
+        .form-card-footer {
+            padding: 20px 30px;
+            background: #FAFBFE;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-accent {
+            background: #8276D9;
+            border: 1px solid #8276D9;
+            color: #fff;
+            border-radius: 11px;
+            padding: 10px 22px;
+            font-size: .87rem;
+            font-weight: 600;
+        }
+
+            .btn-accent:hover {
+                background: #7063C7;
+                color: #fff;
+            }
+
+        .btn-soft {
+            background: #fff;
+            border: 1px solid #E1E4ED;
+            color: #424A60;
+            border-radius: 11px;
+            padding: 10px 18px;
+            font-size: .87rem;
+        }
+
+            .btn-soft:hover {
+                background: #F5F3FF;
+                color: #8276D9;
+            }
+
+        .validation-message {
+            font-size: .78rem;
+            color: #C0342B;
+        }
+
+        @@media(max - width:768px) {
+            .skill-body {
+                padding: 20px;
+            }
+
+            .skill-header {
+                padding: 20px;
+            }
+
+            .form-card-footer {
+                padding: 18px 20px;
+            }
+        }
+    </style>
+}
+
+<div class="skill-form">
 
     <form asp-action="CreateSkill" method="post">
 
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        @Html.AntiForgeryToken()
 
-        <div class="mb-3">
-            <label asp-for="Name" class="form-label">Yetenek Adı</label>
-            <input asp-for="Name"
-                   class="form-control"
-                   placeholder="Örn: C#, ASP.NET Core, SQL Server" />
-            <span asp-validation-for="Name" class="text-danger"></span>
+        <div class="skill-header">
+
+            <div class="skill-icon">
+                <i class="bi bi-lightbulb"></i>
+            </div>
+
+            <div>
+                
+                <small class="text-secondary">
+                    Teknik becerilerinizi ve uzmanlık alanlarınızı portfolyonuza ekleyin.
+                </small>
+            </div>
+
         </div>
 
-        <div class="mb-3">
-            <label asp-for="Percentage" class="form-label">Yetenek Seviyesi (%)</label>
-            <input asp-for="Percentage"
-                   type="number"
-                   min="1"
-                   max="100"
-                   class="form-control"
-                   placeholder="Örn: 75" />
-            <span asp-validation-for="Percentage" class="text-danger"></span>
+        <div class="skill-body">
+
+            <div asp-validation-summary="ModelOnly"
+                 class="alert alert-danger py-2">
+            </div>
+
+            <div class="row g-4">
+
+                <div class="col-12">
+                    <div class="section-heading">
+                        <i class="bi bi-code-slash me-2"
+                           style="color:#8276D9"></i>
+                        Yetenek Bilgileri
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+
+                    <label asp-for="Name" class="form-label">
+                        Yetenek Adı
+                    </label>
+
+                    <div class="field-wrapper">
+                        <i class="bi bi-braces"></i>
+
+                        <input asp-for="Name"
+                               class="form-control"
+                               placeholder="Örn: C#, ASP.NET Core, SQL Server" />
+                    </div>
+
+                    <span asp-validation-for="Name"
+                          class="validation-message"></span>
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <label asp-for="Category" class="form-label">
+                        Yetenek Kategorisi
+                    </label>
+
+                    <div class="field-wrapper">
+                        <i class="bi bi-grid"></i>
+
+                        <input asp-for="Category"
+                               class="form-control"
+                               placeholder="Örn: Programlama, Veritabanı" />
+                    </div>
+
+                    <span asp-validation-for="Category"
+                          class="validation-message"></span>
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <label asp-for="Percentage" class="form-label">
+                        Yetenek Seviyesi (%)
+                    </label>
+
+                    <div class="field-wrapper">
+                        <i class="bi bi-bar-chart-line"></i>
+
+                        <input asp-for="Percentage"
+                               type="number"
+                               min="1"
+                               max="100"
+                               class="form-control"
+                               id="percentageInput"
+                               placeholder="Örn: 75" />
+                    </div>
+
+                    <div class="percentage-hint">
+                        1 ile 100 arasında bir değer girin.
+                    </div>
+
+                    <span asp-validation-for="Percentage"
+                          class="validation-message"></span>
+
+                    <div class="skill-preview">
+
+                        <div class="d-flex justify-content-between">
+                            <span class="fw-semibold"
+                                  style="font-size:.82rem">
+                                Seviye Önizlemesi
+                            </span>
+
+                            <span id="percentageText"
+                                  class="fw-bold"
+                                  style="color:#8276D9">
+                                0%
+                            </span>
+                        </div>
+
+                        <div class="preview-track">
+                            <div class="preview-fill"
+                                 id="percentageBar"></div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <label class="form-label">
+                        Görünürlük Durumu
+                    </label>
+
+                    <div class="status-box">
+
+                        <div>
+                            <div class="fw-semibold"
+                                 style="font-size:.85rem">
+                                Ziyaretçilere göster
+                            </div>
+
+                            <small class="text-secondary">
+                                Yetenek portfolyoda görüntülenir.
+                            </small>
+                        </div>
+
+                        <div class="form-check form-switch m-0">
+                            <input asp-for="IsActive"
+                                   class="form-check-input"
+                                   type="checkbox"
+                                   role="switch" />
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
         </div>
 
-        <div class="mb-3">
-            <label asp-for="Category" class="form-label">Kategori</label>
-            <input asp-for="Category"
-                   class="form-control"
-                   placeholder="Örn: Programlama, Veritabanı" />
-            <span asp-validation-for="Category" class="text-danger"></span>
+        <div class="form-card-footer">
+
+            <a asp-action="SkillList"
+               class="btn btn-soft">
+                <i class="bi bi-arrow-left me-1"></i>
+                Vazgeç
+            </a>
+
+            <button type="submit" class="btn btn-accent">
+                <i class="bi bi-check2-circle me-1"></i>
+                Yeteneği Kaydet
+            </button>
+
         </div>
-
-        <div class="form-check mb-3">
-            <input asp-for="IsActive" class="form-check-input" />
-            <label asp-for="IsActive" class="form-check-label">
-                Ziyaretçi tarafında göster
-            </label>
-        </div>
-
-        <button type="submit" class="btn btn-success">
-            <i class="bi bi-save"></i> Kaydet
-        </button>
-
-        <a asp-action="SkillList" class="btn btn-secondary">
-            Vazgeç
-        </a>
 
     </form>
+
 </div>
+
+<script>
+    const percentageInput = document.getElementById("percentageInput");
+    const percentageText = document.getElementById("percentageText");
+    const percentageBar = document.getElementById("percentageBar");
+
+    function updatePercentage() {
+        let value = parseInt(percentageInput.value) || 0;
+        value = Math.min(100, Math.max(0, value));
+
+        percentageText.textContent = value + "%";
+        percentageBar.style.width = value + "%";
+    }
+
+    percentageInput.addEventListener("input", updatePercentage);
+    updatePercentage();
+</script>

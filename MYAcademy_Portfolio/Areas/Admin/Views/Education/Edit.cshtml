@@ -5,50 +5,342 @@
     Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
 }
 
-<div class="container-fluid">
+@section Styles {
+    <style>
+        .education-edit-wrapper {
+            max-width: 1250px;
+            margin: 0 auto;
+        }
 
-    <h2 class="mb-4">Eğitim Bilgilerini Düzenle</h2>
+        .education-header {
+            margin-bottom: 28px;
+        }
 
-    <form asp-action="Edit" asp-route-id="@Model.EducationId" method="post">
+            .education-header h3 {
+                font-size: 1.5rem;
+                font-weight: 750;
+                color: #252b48;
+                margin-bottom: 7px;
+            }
 
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            .education-header p {
+                color: #8b90a5;
+                font-size: 0.9rem;
+                margin: 0;
+            }
 
-        <div class="mb-3">
-            <label asp-for="Title" class="form-label">Okul / Kurum Adı</label>
-            <input asp-for="Title" class="form-control" />
-            <span asp-validation-for="Title" class="text-danger"></span>
+        .education-card {
+            background: #fff;
+            border: 1px solid #ececf3;
+            border-radius: 18px;
+            box-shadow: 0 5px 25px rgba(35, 40, 75, 0.045);
+            overflow: hidden;
+        }
+
+        .education-card-header {
+            padding: 23px 28px;
+            border-bottom: 1px solid #f0f0f5;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .education-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 13px;
+            background: #f0edff;
+            color: #8276d9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .education-card-header h5 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #303550;
+            margin: 0 0 4px;
+        }
+
+        .education-card-header small {
+            color: #969aae;
+            font-size: 0.8rem;
+        }
+
+        .education-card-body {
+            padding: 30px;
+        }
+
+        .form-label {
+            font-size: 0.87rem;
+            font-weight: 650;
+            color: #414761;
+            margin-bottom: 9px;
+        }
+
+        .form-control {
+            min-height: 46px;
+            border: 1px solid #e5e6ef;
+            border-radius: 10px;
+            padding: 11px 14px;
+            font-size: 0.9rem;
+            color: #353a55;
+            transition: all .2s ease;
+        }
+
+            .form-control:focus {
+                border-color: #8276d9;
+                box-shadow: 0 0 0 3px rgba(130, 118, 217, .12);
+            }
+
+        textarea.form-control {
+            min-height: 140px;
+            resize: vertical;
+        }
+
+        .field-group {
+            margin-bottom: 23px;
+        }
+
+        .status-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8f7ff;
+            border: 1px solid #e9e6ff;
+            border-radius: 12px;
+            padding: 17px 19px;
+            min-height: 75px;
+        }
+
+            .status-box strong {
+                display: block;
+                font-size: .9rem;
+                color: #343955;
+                margin-bottom: 4px;
+            }
+
+            .status-box small {
+                color: #9296aa;
+                font-size: .78rem;
+            }
+
+        .form-check-input {
+            width: 2.6em;
+            height: 1.35em;
+            cursor: pointer;
+        }
+
+            .form-check-input:checked {
+                background-color: #8276d9;
+                border-color: #8276d9;
+            }
+
+        .education-footer {
+            padding: 20px 30px;
+            border-top: 1px solid #f0f0f5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn-save {
+            background: #8276d9;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 11px 23px;
+            font-size: .88rem;
+            font-weight: 650;
+            transition: .2s;
+        }
+
+            .btn-save:hover {
+                background: #7063c5;
+                color: white;
+                transform: translateY(-1px);
+            }
+
+        .btn-cancel {
+            background: #f3f3f7;
+            color: #62677d;
+            border: 1px solid #e9e9ef;
+            border-radius: 10px;
+            padding: 11px 20px;
+            font-size: .88rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: .2s;
+        }
+
+            .btn-cancel:hover {
+                background: #eaeaf1;
+                color: #343955;
+            }
+
+        .education-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            color: #a0a3b3;
+            font-size: .8rem;
+            margin-bottom: 12px;
+        }
+
+            .education-breadcrumb span:last-child {
+                color: #8276d9;
+                font-weight: 600;
+            }
+
+        @@media(max - width: 576px)
+
+        {
+            .education-card-body {
+                padding: 20px;
+            }
+
+            .education-card-header {
+                padding: 20px;
+            }
+
+            .education-footer {
+                padding: 18px 20px;
+            }
+
+                .education-footer button,
+                .education-footer a {
+                    flex: 1;
+                    text-align: center;
+                }
+        }
+    </style>
+}
+
+<div class="container-fluid education-edit-wrapper">
+    <div class="education-card">
+
+        <div class="education-card-header">
+            <div class="education-icon">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+
+            <div>
+                <h5>Eğitim Detayları</h5>
+                <small>Mevcut eğitim bilgilerini düzenle</small>
+            </div>
         </div>
 
-        <div class="mb-3">
-            <label asp-for="SubTitle" class="form-label">Bölüm / Program</label>
-            <input asp-for="SubTitle" class="form-control" />
-            <span asp-validation-for="SubTitle" class="text-danger"></span>
-        </div>
+        <form asp-action="Edit"
+              asp-route-id="@Model.EducationId"
+              method="post">
 
-        <div class="mb-3">
-            <label asp-for="Duration" class="form-label">Tarih / Süre</label>
-            <input asp-for="Duration" class="form-control" />
-            <span asp-validation-for="Duration" class="text-danger"></span>
-        </div>
+            @Html.AntiForgeryToken()
 
-        <div class="mb-3">
-            <label asp-for="Description" class="form-label">Açıklama</label>
-            <textarea asp-for="Description" class="form-control" rows="4"></textarea>
-            <span asp-validation-for="Description" class="text-danger"></span>
-        </div>
+            <input type="hidden" asp-for="EducationId" />
 
-        <div class="form-check mb-3">
-            <input asp-for="IsActive" class="form-check-input" />
-            <label asp-for="IsActive" class="form-check-label">Aktif olarak göster</label>
-        </div>
+            <div class="education-card-body">
 
-        <button type="submit" class="btn btn-primary">
-            Değişiklikleri Kaydet
-        </button>
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-3"></div>
 
-        <a asp-action="Index" class="btn btn-secondary">
-            Vazgeç
-        </a>
+                <div class="row">
 
-    </form>
+                    <div class="col-md-6 field-group">
+                        <label asp-for="Title" class="form-label">
+                            <i class="fas fa-school me-1 text-secondary"></i>
+                            Okul / Kurum Adı
+                        </label>
+
+                        <input asp-for="Title"
+                               class="form-control"
+                               placeholder="Örn: Niğde Ömer Halisdemir Üniversitesi" />
+
+                        <span asp-validation-for="Title"
+                              class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6 field-group">
+                        <label asp-for="SubTitle" class="form-label">
+                            <i class="fas fa-book-open me-1 text-secondary"></i>
+                            Bölüm / Program
+                        </label>
+
+                        <input asp-for="SubTitle"
+                               class="form-control"
+                               placeholder="Örn: Bilgisayar Programcılığı" />
+
+                        <span asp-validation-for="SubTitle"
+                              class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-12 field-group">
+                        <label asp-for="Duration" class="form-label">
+                            <i class="far fa-calendar-alt me-1 text-secondary"></i>
+                            Eğitim Tarihi / Süresi
+                        </label>
+
+                        <input asp-for="Duration"
+                               class="form-control"
+                               placeholder="Örn: 2022 - 2024" />
+
+                        <span asp-validation-for="Duration"
+                              class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-12 field-group">
+                        <label asp-for="Description" class="form-label">
+                            <i class="fas fa-align-left me-1 text-secondary"></i>
+                            Eğitim Açıklaması
+                        </label>
+
+                        <textarea asp-for="Description"
+                                  class="form-control"
+                                  rows="5"
+                                  placeholder="Eğitim sürecin, kazandığın beceriler ve aldığın eğitimler hakkında bilgi yazabilirsin..."></textarea>
+
+                        <span asp-validation-for="Description"
+                              class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label">Görünürlük Ayarı</label>
+
+                        <div class="status-box">
+                            <div>
+                                <strong>Portfolyoda Göster</strong>
+                                <small>
+                                    Aktif olduğunda bu eğitim bilgisi ziyaretçiler tarafından görüntülenebilir.
+                                </small>
+                            </div>
+
+                            <div class="form-check form-switch m-0">
+                                <input asp-for="IsActive"
+                                       class="form-check-input"
+                                       type="checkbox"
+                                       role="switch" />
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="education-footer">
+                <a asp-action="Index" class="btn-cancel">
+                    <i class="fas fa-arrow-left me-1"></i>
+                    Vazgeç
+                </a>
+
+                <button type="submit" class="btn-save">
+                    <i class="fas fa-save me-2"></i>
+                    Değişiklikleri Kaydet
+                </button>
+            </div>
+
+        </form>
+    </div>
 </div>

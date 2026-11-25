@@ -5,115 +5,657 @@
     Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
 }
 
-<div class="container-fluid">
+@section Styles {
+    <style>
+        .project-edit-wrapper {
+            max-width: 1250px;
+            margin: 0 auto;
+        }
 
-    <div class="mb-4">
-        <h3>Proje Güncelle</h3>
-        <p class="text-muted">Mevcut proje bilgilerini düzenleyebilirsiniz.</p>
-    </div>
+        .project-header {
+            margin-bottom: 28px;
+        }
 
-    <div class="card shadow-sm">
-        <div class="card-body">
+            .project-header h3 {
+                font-size: 1.5rem;
+                font-weight: 750;
+                color: #252b48;
+                margin-bottom: 7px;
+            }
 
-            <form asp-action="UpdateProject"
-                  asp-route-id="@Model.ProjectId"
-                  method="post"
-                  enctype="multipart/form-data">
+            .project-header p {
+                color: #8b90a5;
+                font-size: .9rem;
+                margin: 0;
+            }
 
-                <input type="hidden" asp-for="ProjectId" />
+        .project-breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            color: #a0a3b3;
+            font-size: .8rem;
+            margin-bottom: 12px;
+        }
 
-                <div class="mb-3">
-                    <label asp-for="Title" class="form-label">Proje Adı</label>
+            .project-breadcrumb span:last-child {
+                color: #8276d9;
+                font-weight: 600;
+            }
 
-                    <input asp-for="Title" class="form-control" />
+        .project-card {
+            background: #fff;
+            border: 1px solid #ececf3;
+            border-radius: 18px;
+            box-shadow: 0 5px 25px rgba(35, 40, 75, .045);
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
 
-                    <span asp-validation-for="Title" class="text-danger"></span>
+        .project-card-header {
+            padding: 23px 28px;
+            border-bottom: 1px solid #f0f0f5;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .project-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 13px;
+            background: #f0edff;
+            color: #8276d9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .project-card-header h5 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #303550;
+            margin: 0 0 4px;
+        }
+
+        .project-card-header small {
+            color: #969aae;
+            font-size: .8rem;
+        }
+
+        .project-card-body {
+            padding: 30px;
+        }
+
+        .field-group {
+            margin-bottom: 23px;
+        }
+
+        .form-label {
+            font-size: .87rem;
+            font-weight: 650;
+            color: #414761;
+            margin-bottom: 9px;
+        }
+
+        .form-control,
+        .form-select {
+            min-height: 46px;
+            border: 1px solid #e5e6ef;
+            border-radius: 10px;
+            padding: 11px 14px;
+            font-size: .9rem;
+            color: #353a55;
+            transition: all .2s ease;
+        }
+
+            .form-control:focus,
+            .form-select:focus {
+                border-color: #8276d9;
+                box-shadow: 0 0 0 3px rgba(130, 118, 217, .12);
+            }
+
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .field-hint {
+            display: block;
+            margin-top: 8px;
+            color: #999daf;
+            font-size: .78rem;
+        }
+
+        .github-input-wrapper {
+            position: relative;
+        }
+
+            .github-input-wrapper i {
+                position: absolute;
+                left: 14px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #85899c;
+                font-size: 1.1rem;
+            }
+
+            .github-input-wrapper input {
+                padding-left: 43px;
+            }
+
+        .image-preview-card {
+            background: #fafaff;
+            border: 1px solid #eceaf8;
+            border-radius: 14px;
+            padding: 18px;
+        }
+
+        .image-preview {
+            width: 100%;
+            max-width: 360px;
+            height: 205px;
+            object-fit: cover;
+            border-radius: 12px;
+            display: block;
+            border: 1px solid #e8e7ef;
+        }
+
+        .image-empty {
+            width: 100%;
+            max-width: 360px;
+            height: 205px;
+            background: #f0eff7;
+            border: 1px dashed #c9c5e5;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            color: #969aae;
+            gap: 10px;
+        }
+
+            .image-empty i {
+                font-size: 2rem;
+                color: #8276d9;
+            }
+
+        .image-upload-area {
+            border: 1px dashed #c9c5e5;
+            background: #faf9ff;
+            border-radius: 12px;
+            padding: 22px;
+            transition: .2s;
+        }
+
+            .image-upload-area:hover {
+                border-color: #8276d9;
+                background: #f5f3ff;
+            }
+
+        .upload-icon {
+            width: 43px;
+            height: 43px;
+            border-radius: 12px;
+            background: #eeebff;
+            color: #8276d9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+        }
+
+        .image-upload-area strong {
+            display: block;
+            color: #414761;
+            font-size: .88rem;
+            margin-bottom: 5px;
+        }
+
+        .image-upload-area small {
+            color: #9296aa;
+            font-size: .78rem;
+        }
+
+        .image-upload-area input {
+            margin-top: 14px;
+        }
+
+        .status-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8f7ff;
+            border: 1px solid #e9e6ff;
+            border-radius: 12px;
+            padding: 17px 19px;
+            min-height: 75px;
+        }
+
+            .status-box strong {
+                display: block;
+                font-size: .9rem;
+                color: #343955;
+                margin-bottom: 4px;
+            }
+
+            .status-box small {
+                color: #9296aa;
+                font-size: .78rem;
+            }
+
+        .form-check-input {
+            width: 2.6em;
+            height: 1.35em;
+            cursor: pointer;
+        }
+
+            .form-check-input:checked {
+                background-color: #8276d9;
+                border-color: #8276d9;
+            }
+
+        .project-footer {
+            padding: 20px 30px;
+            border-top: 1px solid #f0f0f5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn-save {
+            background: #8276d9;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 11px 23px;
+            font-size: .88rem;
+            font-weight: 650;
+            transition: .2s;
+        }
+
+            .btn-save:hover {
+                background: #7063c5;
+                color: white;
+                transform: translateY(-1px);
+            }
+
+        .btn-cancel {
+            background: #f3f3f7;
+            color: #62677d;
+            border: 1px solid #e9e9ef;
+            border-radius: 10px;
+            padding: 11px 20px;
+            font-size: .88rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: .2s;
+        }
+
+            .btn-cancel:hover {
+                background: #eaeaf1;
+                color: #343955;
+            }
+
+        @@media(max - width: 576px)
+
+        {
+            .project-card-body {
+                padding: 20px;
+            }
+
+            .project-card-header {
+                padding: 20px;
+            }
+
+            .project-footer {
+                padding: 18px 20px;
+            }
+
+                .project-footer button,
+                .project-footer a {
+                    flex: 1;
+                    text-align: center;
+                }
+        }
+    </style>
+}
+
+<div class="container-fluid project-edit-wrapper">
+
+
+    <form asp-action="UpdateProject"
+          asp-route-id="@Model.ProjectId"
+          method="post"
+          enctype="multipart/form-data">
+
+        @Html.AntiForgeryToken()
+
+        <input type="hidden" asp-for="ProjectId" />
+        <input type="hidden" asp-for="CoverImageUrl" />
+
+        <div asp-validation-summary="ModelOnly"
+             class="text-danger mb-3"></div>
+
+        <!-- Proje Bilgileri -->
+        <div class="project-card">
+
+            <div class="project-card-header">
+
+                <div class="project-icon">
+                    <i class="fas fa-project-diagram"></i>
                 </div>
 
-                <div class="mb-3">
-                    <label asp-for="Description" class="form-label">Proje Açıklaması</label>
-
-                    <textarea asp-for="Description"
-                              class="form-control"
-                              rows="5"></textarea>
-
-                    <span asp-validation-for="Description" class="text-danger"></span>
+                <div>
+                    <h5>Proje Detayları</h5>
+                    <small>Projenin temel bilgilerini düzenle</small>
                 </div>
 
-                <div class="mb-3">
-                    <label asp-for="CategoryId" class="form-label">Kategori</label>
+            </div>
 
-                    <select asp-for="CategoryId"
-                            asp-items="ViewBag.Categories"
-                            class="form-select">
-                        <option value="">Kategori seçiniz</option>
-                    </select>
+            <div class="project-card-body">
 
-                    <span asp-validation-for="CategoryId" class="text-danger"></span>
-                </div>
+                <div class="row">
 
-                <div class="mb-3">
-                    <label asp-for="GitHubUrl" class="form-label">GitHub Linki</label>
+                    <div class="col-12 field-group">
 
-                    <input asp-for="GitHubUrl" class="form-control" />
+                        <label asp-for="Title" class="form-label">
+                            <i class="fas fa-heading me-1 text-secondary"></i>
+                            Proje Adı
+                        </label>
 
-                    <span asp-validation-for="GitHubUrl" class="text-danger"></span>
-                </div>
+                        <input asp-for="Title"
+                               class="form-control"
+                               placeholder="Örn: Kafe Yönetim Sistemi" />
 
-                <div class="mb-3">
-                    <label class="form-label">Mevcut Kapak Görseli</label>
+                        <span asp-validation-for="Title"
+                              class="text-danger small"></span>
 
-                    @if (!string.IsNullOrEmpty(Model.CoverImageUrl))
-                    {
-                        <div class="mb-2">
-                            <img src="@Model.CoverImageUrl"
-                                 alt="@Model.Title"
-                                 style="width:180px;height:120px;object-fit:cover;border-radius:8px;" />
+                    </div>
+
+                    <div class="col-12 field-group">
+
+                        <label asp-for="Description" class="form-label">
+                            <i class="fas fa-align-left me-1 text-secondary"></i>
+                            Proje Açıklaması
+                        </label>
+
+                        <textarea asp-for="Description"
+                                  class="form-control"
+                                  rows="5"
+                                  placeholder="Projenin amacı, özellikleri ve kullanılan teknolojileri açıklayın..."></textarea>
+
+                        <span asp-validation-for="Description"
+                              class="text-danger small"></span>
+
+                    </div>
+
+                    <div class="col-md-6 field-group">
+
+                        <label asp-for="CategoryId" class="form-label">
+                            <i class="fas fa-layer-group me-1 text-secondary"></i>
+                            Proje Kategorisi
+                        </label>
+
+                        <select asp-for="CategoryId"
+                                asp-items="ViewBag.Categories"
+                                class="form-select">
+
+                            <option value="">Kategori seçiniz</option>
+
+                        </select>
+
+                        <span asp-validation-for="CategoryId"
+                              class="text-danger small"></span>
+
+                    </div>
+
+                    <div class="col-md-6 field-group">
+
+                        <label asp-for="GitHubUrl" class="form-label">
+                            <i class="fab fa-github me-1 text-secondary"></i>
+                            GitHub Proje Linki
+                        </label>
+
+                        <div class="github-input-wrapper">
+
+                            <i class="fab fa-github"></i>
+
+                            <input asp-for="GitHubUrl"
+                                   class="form-control"
+                                   placeholder="https://github.com/kullanici/proje" />
+
                         </div>
-                    }
-                    else
-                    {
-                        <p class="text-muted">Henüz görsel yüklenmemiş.</p>
-                    }
 
-                    <label class="form-label">Yeni Görsel Seç</label>
+                        <span asp-validation-for="GitHubUrl"
+                              class="text-danger small"></span>
 
-                    <input type="file"
-                           name="coverImage"
-                           class="form-control"
-                           accept=".jpg,.jpeg,.png,.webp" />
+                        <small class="field-hint">
+                            Projenin GitHub bağlantısını ekleyebilirsin.
+                        </small>
 
-                    <small class="text-muted">
-                        Yeni görsel seçmezseniz mevcut görsel korunur.
-                        JPG, JPEG, PNG veya WEBP. En fazla 5 MB.
-                    </small>
+                    </div>
 
-                    <span asp-validation-for="CoverImageUrl" class="text-danger"></span>
                 </div>
 
-                <div class="form-check mb-4">
-                    <input asp-for="IsActive" class="form-check-input" />
+            </div>
 
-                    <label asp-for="IsActive" class="form-check-label">
-                        Proje aktif olarak yayınlansın
-                    </label>
-                </div>
-
-                <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-check-circle"></i> Güncelle
-                    </button>
-
-                    <a asp-action="ProjectList" class="btn btn-secondary">
-                        Vazgeç
-                    </a>
-                </div>
-
-            </form>
         </div>
-    </div>
+
+        <!-- Kapak Görseli -->
+        <div class="project-card">
+
+            <div class="project-card-header">
+
+                <div class="project-icon">
+                    <i class="fas fa-image"></i>
+                </div>
+
+                <div>
+                    <h5>Proje Kapak Görseli</h5>
+                    <small>Mevcut görseli görüntüle veya yenisiyle değiştir</small>
+                </div>
+
+            </div>
+
+            <div class="project-card-body">
+
+                <div class="row g-4">
+
+                    <div class="col-md-6">
+
+                        <label class="form-label">
+                            Mevcut Kapak Görseli
+                        </label>
+
+                        <div class="image-preview-card">
+
+                            @if (!string.IsNullOrEmpty(Model.CoverImageUrl))
+                            {
+                                <img src="@Model.CoverImageUrl"
+                                     alt="@Model.Title"
+                                     class="image-preview"
+                                     id="currentImage" />
+                            }
+                            else
+                            {
+                                <div class="image-empty" id="emptyImage">
+                                    <i class="fas fa-image"></i>
+                                    <span>Henüz görsel yüklenmemiş</span>
+                                </div>
+                            }
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <label class="form-label">
+                            Yeni Kapak Görseli
+                        </label>
+
+                        <div class="image-upload-area">
+
+                            <div class="upload-icon">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </div>
+
+                            <strong>Yeni bir görsel seç</strong>
+
+                            <small>
+                                Yeni görsel seçmezsen mevcut görsel korunur.
+                            </small>
+
+                            <input type="file"
+                                   name="coverImage"
+                                   id="coverImageInput"
+                                   class="form-control"
+                                   accept=".jpg,.jpeg,.png,.webp" />
+
+                            <small class="field-hint">
+                                JPG, JPEG, PNG veya WEBP. En fazla 5 MB.
+                            </small>
+
+                        </div>
+
+                        <span asp-validation-for="CoverImageUrl"
+                              class="text-danger small"></span>
+
+                    </div>
+
+                </div>
+
+                <div id="newImagePreviewArea" class="mt-4" style="display:none;">
+
+                    <label class="form-label">
+                        Seçilen Yeni Görselin Önizlemesi
+                    </label>
+
+                    <img id="newImagePreview"
+                         class="image-preview"
+                         alt="Yeni proje görseli önizlemesi" />
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Görünürlük -->
+        <div class="project-card">
+
+            <div class="project-card-header">
+
+                <div class="project-icon">
+                    <i class="fas fa-eye"></i>
+                </div>
+
+                <div>
+                    <h5>Yayın Ayarları</h5>
+                    <small>Projenin ziyaretçilere görünürlüğünü belirle</small>
+                </div>
+
+            </div>
+
+            <div class="project-card-body">
+
+                <div class="status-box">
+
+                    <div>
+                        <strong>Portfolyoda Göster</strong>
+                        <small>
+                            Aktif olduğunda proje ziyaretçiler tarafından görüntülenebilir.
+                        </small>
+                    </div>
+
+                    <div class="form-check form-switch m-0">
+                        <input asp-for="IsActive"
+                               class="form-check-input"
+                               type="checkbox"
+                               role="switch" />
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Butonlar -->
+        <div class="project-card">
+
+            <div class="project-footer">
+
+                <a asp-action="ProjectList" class="btn-cancel">
+                    <i class="fas fa-arrow-left me-1"></i>
+                    Vazgeç
+                </a>
+
+                <button type="submit" class="btn-save">
+                    <i class="fas fa-save me-2"></i>
+                    Değişiklikleri Kaydet
+                </button>
+
+            </div>
+
+        </div>
+
+    </form>
+
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        const coverImageInput = document.getElementById("coverImageInput");
+        const newImagePreview = document.getElementById("newImagePreview");
+        const newImagePreviewArea = document.getElementById("newImagePreviewArea");
+
+        coverImageInput.addEventListener("change", function () {
+
+            const file = this.files[0];
+
+            if (!file) {
+                newImagePreviewArea.style.display = "none";
+                newImagePreview.removeAttribute("src");
+                return;
+            }
+
+            const allowedTypes = [
+                "image/jpeg",
+                "image/png",
+                "image/webp"
+            ];
+
+            if (!allowedTypes.includes(file.type)) {
+                alert("Lütfen JPG, JPEG, PNG veya WEBP formatında bir görsel seçin.");
+                this.value = "";
+                newImagePreviewArea.style.display = "none";
+                return;
+            }
+
+            if (file.size > 5 * 1024 * 1024) {
+                alert("Görsel boyutu en fazla 5 MB olabilir.");
+                this.value = "";
+                newImagePreviewArea.style.display = "none";
+                return;
+            }
+
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                newImagePreview.src = e.target.result;
+                newImagePreviewArea.style.display = "block";
+            };
+
+            reader.readAsDataURL(file);
+        });
+    </script>
 }
