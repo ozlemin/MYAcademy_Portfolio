@@ -1,12 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿
+using Microsoft.AspNetCore.Mvc;
+using MYAcademy_Portfolio.Context;
 
 namespace MYAcademy_Portfolio.ViewComponents.DefaultViewComponents
 {
-    public class _DefaultNavbarComponentPartial:ViewComponent
+    public class _DefaultNavbarComponentPartial(PortfolioContext context) : ViewComponent
     {
         public IViewComponentResult Invoke()
         {
-            return View();
+            var hero = context.HeroSections.FirstOrDefault();
+
+            return View(hero);
         }
     }
 }
